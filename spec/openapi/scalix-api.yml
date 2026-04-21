@@ -1,0 +1,467 @@
+openapi: 3.1.0
+info:
+  title: Scalix World API
+  version: 0.1.0
+  description: |
+    Scalix World API — the universal API for AI agent execution, LLM routing,
+    sandboxed code execution, and managed database access.
+
+    This specification is the source of truth for auto-generated SDKs
+    in Go, Java, C#, Swift, Rust, and PHP (via Fern).
+  contact:
+    name: Scalix SDK Team
+    email: sdk@scalix.dev
+    url: https://scalix.dev/sdk
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.scalix.dev/v1
+    description: Production
+  - url: https://staging-api.scalix.dev/v1
+    description: Staging
+  - url: http://localhost:4000/v1
+    description: Local development
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Agents
+    description: AI agent creation and execution
+  - name: Sandbox
+    description: Sandboxed code execution
+  - name: Router
+    description: LLM routing and model management
+  - name: Database
+    description: ScalixDB managed database operations
+  - name: Hosting
+    description: Application deployment and hosting
+
+paths:
+  # --- Agents ---
+  /agents/run:
+    post:
+      tags: [Agents]
+      operationId: runAgent
+      summary: Execute an AI agent
+      description: |
+        Run an agent with the given prompt. The agent will reason, call tools,
+        and return a final response.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRunRequest'
+      responses:
+        '200':
+          description: Agent execution completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+
+  /agents/stream:
+    post:
+      tags: [Agents]
+      operationId: streamAgent
+      summary: Execute an AI agent with streaming
+      description: Stream agent events as server-sent events (SSE).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRunRequest'
+      responses:
+        '200':
+          description: Streaming agent events
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/StreamEvent'
+
+  # --- Sandbox ---
+  /sandbox/execute:
+    post:
+      tags: [Sandbox]
+      operationId: executeSandbox
+      summary: Execute code in a sandbox
+      description: Run code in a secure Firecracker microVM with optional GPU support.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SandboxExecRequest'
+      responses:
+        '200':
+          description: Code execution completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SandboxResult'
+
+  # --- Router ---
+  /router/chat/completions:
+    post:
+      tags: [Router]
+      operationId: chatCompletion
+      summary: Chat completion via Scalix Router
+      description: |
+        Send a chat completion request through Scalix Router for
+        intelligent model selection and cost optimization.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+      responses:
+        '200':
+          description: Chat completion response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+
+  /router/models:
+    get:
+      tags: [Router]
+      operationId: listModels
+      summary: List available models
+      responses:
+        '200':
+          description: List of available models
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  models:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ModelInfo'
+
+  # --- Database ---
+  /database/{databaseId}/query:
+    post:
+      tags: [Database]
+      operationId: queryDatabase
+      summary: Execute a SQL query
+      parameters:
+        - name: databaseId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatabaseQueryRequest'
+      responses:
+        '200':
+          description: Query results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseQueryResponse'
+
+  # --- Hosting ---
+  /hosting/deploy:
+    post:
+      tags: [Hosting]
+      operationId: deploy
+      summary: Deploy an application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployRequest'
+      responses:
+        '200':
+          description: Deployment initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeployResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+
+  schemas:
+    # --- Agent Schemas ---
+    AgentRunRequest:
+      type: object
+      required: [prompt]
+      properties:
+        prompt:
+          type: string
+          description: The user's input prompt.
+        model:
+          type: string
+          default: auto
+          description: LLM model to use. "auto" for intelligent routing.
+        instructions:
+          type: string
+          description: System prompt for the agent.
+        tools:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToolDefinition'
+        maxTurns:
+          type: integer
+          default: 10
+        temperature:
+          type: number
+          default: 0.7
+
+    AgentResult:
+      type: object
+      properties:
+        output:
+          type: string
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        toolCalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToolCallResult'
+        model:
+          type: string
+        usage:
+          $ref: '#/components/schemas/Usage'
+
+    StreamEvent:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text_delta, tool_call_start, tool_call_delta, tool_call_end, tool_result, done, error]
+        data:
+          oneOf:
+            - type: string
+            - type: object
+        toolName:
+          type: string
+        toolCallId:
+          type: string
+
+    # --- Message Schemas ---
+    Message:
+      type: object
+      required: [role, content]
+      properties:
+        role:
+          type: string
+          enum: [system, user, assistant, tool]
+        content:
+          type: string
+        name:
+          type: string
+        toolCallId:
+          type: string
+
+    # --- Tool Schemas ---
+    ToolDefinition:
+      type: object
+      required: [name, description]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        parameters:
+          type: object
+
+    ToolCallResult:
+      type: object
+      properties:
+        toolName:
+          type: string
+        arguments:
+          type: object
+        result: {}
+        durationMs:
+          type: number
+        error:
+          type: string
+
+    # --- Sandbox Schemas ---
+    SandboxExecRequest:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+        runtime:
+          type: string
+          default: python
+          enum: [python, node, go, rust]
+        timeout:
+          type: integer
+          default: 30
+        gpu:
+          type: string
+          enum: [t4, a100, h100]
+
+    SandboxResult:
+      type: object
+      properties:
+        stdout:
+          type: string
+        stderr:
+          type: string
+        exitCode:
+          type: integer
+        files:
+          type: array
+          items:
+            type: string
+        durationMs:
+          type: number
+
+    # --- Router Schemas ---
+    ChatCompletionRequest:
+      type: object
+      required: [messages]
+      properties:
+        model:
+          type: string
+          default: auto
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        temperature:
+          type: number
+        tools:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToolDefinition'
+        stream:
+          type: boolean
+
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        model:
+          type: string
+        message:
+          $ref: '#/components/schemas/Message'
+        usage:
+          $ref: '#/components/schemas/Usage'
+
+    ModelInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        provider:
+          type: string
+        contextWindow:
+          type: integer
+        maxOutputTokens:
+          type: integer
+        supportsTools:
+          type: boolean
+        supportsStreaming:
+          type: boolean
+
+    # --- Database Schemas ---
+    DatabaseQueryRequest:
+      type: object
+      required: [sql]
+      properties:
+        sql:
+          type: string
+        params:
+          type: array
+
+    DatabaseQueryResponse:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+        rowCount:
+          type: integer
+
+    # --- Hosting Schemas ---
+    DeployRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        source:
+          type: string
+          description: Git repository URL or local path.
+        environment:
+          type: object
+          additionalProperties:
+            type: string
+
+    DeployResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        status:
+          type: string
+          enum: [building, deploying, ready, failed]
+
+    # --- Common Schemas ---
+    Usage:
+      type: object
+      properties:
+        promptTokens:
+          type: integer
+        completionTokens:
+          type: integer
+        totalTokens:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RateLimited:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

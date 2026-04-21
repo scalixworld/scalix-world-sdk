@@ -1,0 +1,92 @@
+{
+  "name": "scalix",
+  "version": "0.1.0",
+  "description": "The AI agent SDK — build, run, and deploy AI agents with built-in sandboxed execution, smart LLM routing, and managed persistence.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./agent": {
+      "types": "./dist/agent/index.d.ts",
+      "import": "./dist/agent/index.js"
+    },
+    "./tools": {
+      "types": "./dist/tools/index.d.ts",
+      "import": "./dist/tools/index.js"
+    },
+    "./providers/local": {
+      "types": "./dist/providers/local/index.d.ts",
+      "import": "./dist/providers/local/index.js"
+    },
+    "./providers/cloud": {
+      "types": "./dist/providers/cloud/index.d.ts",
+      "import": "./dist/providers/cloud/index.js"
+    },
+    "./protocols": {
+      "types": "./dist/protocols/index.d.ts",
+      "import": "./dist/protocols/index.js"
+    }
+  },
+  "bin": {
+    "scalix-sdk": "./dist/cli/main.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src/",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "llm",
+    "sdk",
+    "scalix",
+    "sandbox",
+    "routing",
+    "mcp",
+    "a2a",
+    "typescript"
+  ],
+  "author": "Scalix <sdk@scalix.dev>",
+  "license": "MIT",
+  "homepage": "https://scalix.dev/sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scalix-world/scalix-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/scalix-world/scalix-sdk/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "eslint": "^9.0.0"
+  },
+  "peerDependencies": {
+    "openai": ">=4.0.0",
+    "@anthropic-ai/sdk": ">=0.30.0",
+    "@google/generative-ai": ">=0.20.0"
+  },
+  "peerDependenciesMeta": {
+    "openai": { "optional": true },
+    "@anthropic-ai/sdk": { "optional": true },
+    "@google/generative-ai": { "optional": true }
+  }
+}

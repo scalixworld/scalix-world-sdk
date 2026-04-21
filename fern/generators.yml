@@ -1,0 +1,58 @@
+# Fern SDK generators — auto-generate typed API clients from the OpenAPI spec.
+#
+# These are Layer 3 SDKs (see VISION.md): typed API clients for languages
+# beyond Python and TypeScript. They provide good DX with API access but
+# no agent framework.
+#
+# Run: fern generate
+# Docs: https://docs.buildwithfern.com/
+
+api:
+  path: ../spec/openapi/scalix-api.yml
+
+default-group: sdks
+
+groups:
+  sdks:
+    generators:
+      - name: fernapi/fern-go-sdk
+        version: 0.26.0
+        output:
+          location: local-file-system
+          path: ../packages/go
+        config:
+          module: github.com/scalix-dev/scalix-go
+
+      - name: fernapi/fern-java-sdk
+        version: 0.12.0
+        output:
+          location: local-file-system
+          path: ../packages/java
+        config:
+          client-class-name: ScalixClient
+          base-package: dev.scalix.sdk
+
+      - name: fernapi/fern-csharp-sdk
+        version: 0.9.0
+        output:
+          location: local-file-system
+          path: ../packages/csharp
+        config:
+          namespace: Scalix.SDK
+          client-class-name: ScalixClient
+
+      - name: fernapi/fern-ruby-sdk
+        version: 0.6.0
+        output:
+          location: local-file-system
+          path: ../packages/ruby
+        config:
+          gem-name: scalix
+
+      - name: fernapi/fern-openapi
+        version: 0.1.0
+        output:
+          location: local-file-system
+          path: ../spec/generated
+        config:
+          format: json

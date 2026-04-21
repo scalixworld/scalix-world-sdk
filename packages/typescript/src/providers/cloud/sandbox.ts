@@ -1,8 +1,8 @@
 /**
- * Scalix Sandbox provider — wraps the existing @scalix/sandbox SDK.
+ * Scalix Sandbox provider — wraps the existing @scalix-world/sandbox SDK.
  *
  * Provides Firecracker microVM isolation and GPU compute.
- * This is a thin wrapper that delegates to the existing @scalix/sandbox package.
+ * This is a thin wrapper that delegates to the existing @scalix-world/sandbox package.
  */
 
 import { getConfig, isCloudMode, type ScalixConfig } from '../../config.js';
@@ -10,7 +10,7 @@ import { AuthenticationError, ProviderError, SandboxError } from '../../errors.j
 import type { SandboxProvider } from '../base.js';
 import type { SandboxResult } from '../../types.js';
 
-/** Map SDK runtime names to @scalix/sandbox runtime identifiers. */
+/** Map SDK runtime names to @scalix-world/sandbox runtime identifiers. */
 const RUNTIME_MAP: Record<string, string> = {
   python: 'python3.12',
   'python3.12': 'python3.12',
@@ -49,7 +49,7 @@ const EXT_MAP: Record<string, string> = {
 /**
  * Execute code in Scalix Sandbox — Firecracker microVMs with GPU support.
  *
- * Wraps the existing `@scalix/sandbox` TypeScript SDK.
+ * Wraps the existing `@scalix-world/sandbox` TypeScript SDK.
  * Requires a Scalix API key (cloud mode).
  *
  * Advantages over Docker sandbox:
@@ -77,7 +77,7 @@ export class ScalixSandboxProvider implements SandboxProvider {
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { configure } = require('@scalix/sandbox') as {
+      const { configure } = require('@scalix-world/sandbox') as {
         configure: (opts: { apiKey: string; baseUrl?: string }) => void;
       };
       configure({
@@ -87,7 +87,7 @@ export class ScalixSandboxProvider implements SandboxProvider {
       this.configured = true;
     } catch {
       throw new ProviderError(
-        '@scalix/sandbox package not installed. Run: npm install @scalix/sandbox',
+        '@scalix-world/sandbox package not installed. Run: npm install @scalix-world/sandbox',
       );
     }
   }
@@ -116,7 +116,7 @@ export class ScalixSandboxProvider implements SandboxProvider {
 
     // Dynamic import of Sandbox class
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { Sandbox } = require('@scalix/sandbox') as {
+    const { Sandbox } = require('@scalix-world/sandbox') as {
       Sandbox: {
         create: (config: Record<string, unknown>) => Promise<SandboxInstance>;
       };
@@ -186,7 +186,7 @@ export class ScalixSandboxProvider implements SandboxProvider {
   }
 }
 
-/** Internal type for the @scalix/sandbox Sandbox instance. */
+/** Internal type for the @scalix-world/sandbox Sandbox instance. */
 interface SandboxInstance {
   runCommand(
     cmd: string,

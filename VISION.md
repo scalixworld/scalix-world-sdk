@@ -397,7 +397,7 @@ This measures the flywheel: free SDK → paid infrastructure.
 
 ## 14. Open Questions
 
-1. **Naming**: `scalix` (PyPI/npm) vs `scalix-sdk` vs `@scalix/sdk`? Need to check availability.
+1. **Naming**: `scalix` (PyPI/npm) vs `scalix-sdk` vs `@scalix-world/sdk`? Need to check availability.
 2. **License**: MIT (maximum adoption) vs Apache 2.0 (patent protection)?
 3. **Monorepo vs Polyrepo**: Single repo for Python + TS, or separate repos?
 4. **Local sandbox runtime**: Docker (requires Docker Desktop) vs subprocess (lighter but less isolated)?

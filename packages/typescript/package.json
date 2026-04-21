@@ -60,9 +60,9 @@
     "a2a",
     "typescript"
   ],
-  "author": "Scalix <sdk@scalix.dev>",
+  "author": "Scalix <sdk@scalix.world>",
   "license": "MIT",
-  "homepage": "https://scalix.dev/sdk",
+  "homepage": "https://scalix.world/sdk",
   "repository": {
     "type": "git",
     "url": "https://github.com/scalix-world/scalix-sdk"

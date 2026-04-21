@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [
-    { name = "Scalix", email = "sdk@scalix.dev" },
+    { name = "Scalix", email = "sdk@scalix.world" },
 ]
 keywords = [
     "ai",
@@ -95,8 +95,8 @@ dev = [
 scalix = "scalix.cli.main:main"
 
 [project.urls]
-Homepage = "https://scalix.dev/sdk"
-Documentation = "https://docs.scalix.dev/sdk"
+Homepage = "https://scalix.world/sdk"
+Documentation = "https://docs.scalix.world/sdk"
 Repository = "https://github.com/scalix-world/scalix-sdk"
 Issues = "https://github.com/scalix-world/scalix-sdk/issues"
 Changelog = "https://github.com/scalix-world/scalix-sdk/blob/main/CHANGELOG.md"

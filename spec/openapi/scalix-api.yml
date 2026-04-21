@@ -10,16 +10,16 @@ info:
     in Go, Java, C#, Swift, Rust, and PHP (via Fern).
   contact:
     name: Scalix SDK Team
-    email: sdk@scalix.dev
-    url: https://scalix.dev/sdk
+    email: sdk@scalix.world
+    url: https://scalix.world/sdk
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
 
 servers:
-  - url: https://api.scalix.dev/v1
+  - url: https://api.scalix.world/v1
     description: Production
-  - url: https://staging-api.scalix.dev/v1
+  - url: https://staging-api.scalix.world/v1
     description: Staging
   - url: http://localhost:4000/v1
     description: Local development

@@ -2,7 +2,7 @@
  * Abstract provider interfaces and Database convenience class.
  */
 
-import { getConfig, isCloudMode } from '../config.js';
+import { isCloudMode } from '../config.js';
 import type { Message, StreamEvent, SandboxResult } from '../types.js';
 
 export interface LLMProvider {

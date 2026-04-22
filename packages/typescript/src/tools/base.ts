@@ -19,13 +19,13 @@ export class Tool {
   readonly name: string;
   readonly description: string;
   readonly parameters: Record<string, unknown>;
-  private executeFn?: (...args: unknown[]) => unknown;
+  private executeFn?: (args: Record<string, unknown>) => unknown;
 
   constructor(options: {
     name: string;
     description: string;
     parameters?: Record<string, unknown>;
-    execute?: (...args: unknown[]) => unknown;
+    execute?: (args: Record<string, unknown>) => unknown;
   }) {
     this.name = options.name;
     this.description = options.description;
@@ -80,7 +80,7 @@ export class Tool {
     });
   }
 
-  static sql(database?: string): Tool {
+  static sql(_database?: string): Tool {
     return new Tool({
       name: 'sql',
       description: 'Execute a SQL query against the database.',
@@ -94,7 +94,7 @@ export class Tool {
     });
   }
 
-  static webSearch(provider?: string): Tool {
+  static webSearch(_provider?: string): Tool {
     return new Tool({
       name: 'web_search',
       description: 'Search the web for information.',
@@ -108,7 +108,7 @@ export class Tool {
     });
   }
 
-  static http(baseUrl?: string): Tool {
+  static http(_baseUrl?: string): Tool {
     return new Tool({
       name: 'http',
       description: 'Make HTTP requests to external APIs.',
@@ -138,7 +138,7 @@ export class Tool {
    * Note: This is an async operation. Use `await Tool.mcpAsync()` or
    * call this synchronous version which blocks until discovery completes.
    */
-  static mcp(serverUrl: string): Tool[] {
+  static mcp(_serverUrl: string): Tool[] {
     // Synchronous wrapper — delegates to mcpAsync internally
     // For Node.js, we use a sync approach by spawning a subprocess
     throw new Error(
@@ -222,7 +222,7 @@ export class Tool {
   static fromFunction(
     name: string,
     description: string,
-    fn: (...args: unknown[]) => unknown,
+    fn: (args: Record<string, unknown>) => unknown,
     parameters?: Record<string, unknown>,
   ): Tool {
     return new Tool({ name, description, parameters, execute: fn });

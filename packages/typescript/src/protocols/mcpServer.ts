@@ -54,7 +54,6 @@ export class MCPServer {
   private buildServer(): FastMCPInstance {
     if (this.mcp) return this.mcp;
 
-    let McpServer: new (name: string) => FastMCPInstance;
     try {
       // The @modelcontextprotocol/sdk provides Server class
       // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -123,8 +122,9 @@ export class MCPServer {
     const toolsRef = this.tools;
     server.setRequestHandler(
       'tools/call',
-      async (request: { params: { name: string; arguments?: Record<string, unknown> } }) => {
-        const { name, arguments: args } = request.params;
+      async (request: unknown) => {
+        const { params } = request as { params: { name: string; arguments?: Record<string, unknown> } };
+        const { name, arguments: args } = params;
 
         if (name === 'run_agent' && agentRef) {
           const prompt = (args?.prompt as string) ?? '';

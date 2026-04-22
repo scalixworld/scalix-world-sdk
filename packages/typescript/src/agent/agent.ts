@@ -299,7 +299,7 @@ class ToolExecutor {
 
   constructor(
     tools: Tool[],
-    private config: ReturnType<typeof getConfig>,
+    _config: ReturnType<typeof getConfig>,
   ) {
     this.tools = new Map(tools.map((t) => [t.name, t]));
   }

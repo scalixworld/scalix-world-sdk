@@ -17,7 +17,6 @@
  */
 
 import type { Agent } from '../agent/agent.js';
-import type { Tool } from '../tools/base.js';
 import { randomUUID } from 'crypto';
 
 interface A2AServerOptions {

@@ -22,6 +22,7 @@ from scalix.agent.agent import Agent
 from scalix.agent.orchestrator import Team, Pipeline
 from scalix.tools.base import Tool
 from scalix.providers.base import Database
+from scalix.client import ScalixClient
 from scalix.exceptions import (
     ScalixError,
     ConfigurationError,
@@ -37,6 +38,8 @@ __all__ = [
     "configure",
     "get_config",
     "ScalixConfig",
+    # Client
+    "ScalixClient",
     # Core
     "Agent",
     "Team",

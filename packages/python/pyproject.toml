@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scalix"
-version = "0.1.0"
+version = "1.0.0"
 description = "The AI agent SDK — build, run, and deploy AI agents with built-in sandboxed execution, smart LLM routing, and managed persistence."
 readme = "README.md"
 license = "MIT"
@@ -97,9 +97,9 @@ scalix = "scalix.cli.main:main"
 [project.urls]
 Homepage = "https://scalix.world/sdk"
 Documentation = "https://docs.scalix.world/sdk"
-Repository = "https://github.com/scalix-world/scalix-sdk"
-Issues = "https://github.com/scalix-world/scalix-sdk/issues"
-Changelog = "https://github.com/scalix-world/scalix-sdk/blob/main/CHANGELOG.md"
+Repository = "https://github.com/scalixworld/scalix-sdk"
+Issues = "https://github.com/scalixworld/scalix-sdk/issues"
+Changelog = "https://github.com/scalixworld/scalix-sdk/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["scalix"]

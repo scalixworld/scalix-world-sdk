@@ -1,6 +1,6 @@
 {
-  "name": "scalix",
-  "version": "0.1.0",
+  "name": "@scalix-world/sdk",
+  "version": "1.0.0",
   "description": "The AI agent SDK — build, run, and deploy AI agents with built-in sandboxed execution, smart LLM routing, and managed persistence.",
   "type": "module",
   "main": "./dist/index.js",
@@ -29,6 +29,14 @@
     "./protocols": {
       "types": "./dist/protocols/index.d.ts",
       "import": "./dist/protocols/index.js"
+    },
+    "./services": {
+      "types": "./dist/services/index.d.ts",
+      "import": "./dist/services/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
     }
   },
   "bin": {
@@ -65,10 +73,10 @@
   "homepage": "https://scalix.world/sdk",
   "repository": {
     "type": "git",
-    "url": "https://github.com/scalix-world/scalix-sdk"
+    "url": "https://github.com/scalixworld/scalix-sdk"
   },
   "bugs": {
-    "url": "https://github.com/scalix-world/scalix-sdk/issues"
+    "url": "https://github.com/scalixworld/scalix-sdk/issues"
   },
   "engines": {
     "node": ">=18.0.0"

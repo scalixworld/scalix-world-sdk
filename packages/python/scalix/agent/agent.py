@@ -420,19 +420,19 @@ class ToolExecutor:
 
         query = arguments.get("query", "")
         config = get_config()
-        headers: dict[str, str] = {"User-Agent": "Scalix-SDK/0.1"}
+        headers: dict[str, str] = {
+            "User-Agent": "Scalix-SDK/0.1",
+            "Content-Type": "application/json",
+        }
 
-        if config.search_base_url:
-            search_url = config.search_base_url
-        else:
-            search_url = f"{config.base_url}/v1/search"
+        search_url = config.search_base_url or f"{config.base_url}/research/search"
         if config.api_key:
             headers["Authorization"] = f"Bearer {config.api_key}"
 
         async with httpx.AsyncClient(timeout=15.0) as client:
-            resp = await client.get(
+            resp = await client.post(
                 search_url,
-                params={"q": query},
+                json={"query": query},
                 headers=headers,
             )
             return resp.text[:5000]

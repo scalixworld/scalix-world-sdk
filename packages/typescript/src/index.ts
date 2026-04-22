@@ -23,6 +23,7 @@
  * @packageDocumentation
  */
 
+export { ScalixClient } from './client.js';
 export { Agent } from './agent/agent.js';
 export { Team, Pipeline } from './agent/orchestrator.js';
 export { Tool } from './tools/base.js';
@@ -54,3 +55,11 @@ export {
 } from './errors.js';
 export { MCPServer } from './protocols/mcpServer.js';
 export { A2AServer } from './protocols/a2aServer.js';
+export {
+  AudioService,
+  ImagesService,
+  ResearchService,
+  TextService,
+  RAGService,
+  DocGenService,
+} from './services/index.js';

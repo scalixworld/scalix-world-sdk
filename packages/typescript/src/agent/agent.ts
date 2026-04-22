@@ -446,11 +446,17 @@ class ToolExecutor {
     const query = (args.query as string) ?? '';
     const config = getConfig();
     const searchUrl = config.searchBaseUrl
-      ? `${config.searchBaseUrl}?q=${encodeURIComponent(query)}`
-      : `${config.baseUrl}/v1/search?q=${encodeURIComponent(query)}`;
-    const headers: Record<string, string> = { 'User-Agent': 'Scalix-SDK/0.1' };
+      ?? `${config.baseUrl}/research/search`;
+    const headers: Record<string, string> = {
+      'User-Agent': 'Scalix-SDK/0.1',
+      'Content-Type': 'application/json',
+    };
     if (config.apiKey) headers['Authorization'] = `Bearer ${config.apiKey}`;
-    const resp = await fetch(searchUrl, { headers });
+    const resp = await fetch(searchUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query }),
+    });
     const text = await resp.text();
     return text.slice(0, 5000);
   }

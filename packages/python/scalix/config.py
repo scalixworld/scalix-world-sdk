@@ -38,11 +38,15 @@ class ScalixConfig(BaseModel):
     )
     database_mode: str = Field(default="auto", description="auto | sqlite | cloud")
 
-    # LLM provider keys (for local mode)
+    # LLM provider keys and endpoints (for local/BYOK mode)
     openai_api_key: str | None = Field(default=None)
+    openai_base_url: str | None = Field(default=None, description="Override OpenAI API base URL")
     anthropic_api_key: str | None = Field(default=None)
+    anthropic_base_url: str | None = Field(default=None, description="Override Anthropic API base URL")
     google_api_key: str | None = Field(default=None)
+    google_base_url: str | None = Field(default=None, description="Override Google AI base URL")
     ollama_host: str | None = Field(default=None)
+    search_base_url: str | None = Field(default=None, description="Override search endpoint")
 
     @property
     def is_cloud_mode(self) -> bool:
@@ -118,9 +122,13 @@ def _load_config(**overrides: Any) -> ScalixConfig:
         "SCALIX_SANDBOX_MODE": "sandbox_mode",
         "SCALIX_DATABASE_MODE": "database_mode",
         "OPENAI_API_KEY": "openai_api_key",
+        "OPENAI_BASE_URL": "openai_base_url",
         "ANTHROPIC_API_KEY": "anthropic_api_key",
+        "ANTHROPIC_BASE_URL": "anthropic_base_url",
         "GOOGLE_API_KEY": "google_api_key",
+        "GOOGLE_BASE_URL": "google_base_url",
         "OLLAMA_HOST": "ollama_host",
+        "SCALIX_SEARCH_URL": "search_base_url",
     }
 
     for env_var, config_key in env_mapping.items():

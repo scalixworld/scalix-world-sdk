@@ -120,8 +120,11 @@ export class DirectLLM implements LLMProvider {
   private async getOpenAIClient(): Promise<unknown> {
     if (!this.openaiClient) {
       try {
-        const { OpenAI } = await dynamicImport('openai') as { OpenAI: new (opts: { apiKey?: string }) => unknown };
-        this.openaiClient = new OpenAI({ apiKey: this.config.openaiApiKey });
+        const { OpenAI } = await dynamicImport('openai') as { OpenAI: new (opts: { apiKey?: string; baseURL?: string }) => unknown };
+        this.openaiClient = new OpenAI({
+          apiKey: this.config.openaiApiKey,
+          ...(this.config.openaiBaseUrl && { baseURL: this.config.openaiBaseUrl }),
+        });
       } catch {
         throw new ConfigurationError(
           'OpenAI package not installed. Run: npm install openai',
@@ -255,8 +258,11 @@ export class DirectLLM implements LLMProvider {
   private async getAnthropicClient(): Promise<unknown> {
     if (!this.anthropicClient) {
       try {
-        const { default: Anthropic } = await dynamicImport('@anthropic-ai/sdk') as { default: new (opts: { apiKey?: string }) => unknown };
-        this.anthropicClient = new Anthropic({ apiKey: this.config.anthropicApiKey });
+        const { default: Anthropic } = await dynamicImport('@anthropic-ai/sdk') as { default: new (opts: { apiKey?: string; baseURL?: string }) => unknown };
+        this.anthropicClient = new Anthropic({
+          apiKey: this.config.anthropicApiKey,
+          ...(this.config.anthropicBaseUrl && { baseURL: this.config.anthropicBaseUrl }),
+        });
       } catch {
         throw new ConfigurationError(
           'Anthropic package not installed. Run: npm install @anthropic-ai/sdk',

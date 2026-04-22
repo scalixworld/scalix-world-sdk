@@ -18,9 +18,13 @@ export interface ScalixConfig {
   sandboxMode: 'auto' | 'docker' | 'subprocess' | 'cloud';
   databaseMode: 'auto' | 'sqlite' | 'cloud';
   openaiApiKey?: string;
+  openaiBaseUrl?: string;
   anthropicApiKey?: string;
+  anthropicBaseUrl?: string;
   googleApiKey?: string;
+  googleBaseUrl?: string;
   ollamaHost?: string;
+  searchBaseUrl?: string;
 }
 
 const DEFAULT_CONFIG: ScalixConfig = {
@@ -81,9 +85,13 @@ function loadConfig(overrides: Partial<ScalixConfig>): ScalixConfig {
     ...(env.SCALIX_API_KEY && { apiKey: env.SCALIX_API_KEY }),
     ...(env.SCALIX_PROJECT_ID && { projectId: env.SCALIX_PROJECT_ID }),
     ...(env.OPENAI_API_KEY && { openaiApiKey: env.OPENAI_API_KEY }),
+    ...(env.OPENAI_BASE_URL && { openaiBaseUrl: env.OPENAI_BASE_URL }),
     ...(env.ANTHROPIC_API_KEY && { anthropicApiKey: env.ANTHROPIC_API_KEY }),
+    ...(env.ANTHROPIC_BASE_URL && { anthropicBaseUrl: env.ANTHROPIC_BASE_URL }),
     ...(env.GOOGLE_API_KEY && { googleApiKey: env.GOOGLE_API_KEY }),
+    ...(env.GOOGLE_BASE_URL && { googleBaseUrl: env.GOOGLE_BASE_URL }),
     ...(env.OLLAMA_HOST && { ollamaHost: env.OLLAMA_HOST }),
+    ...(env.SCALIX_SEARCH_URL && { searchBaseUrl: env.SCALIX_SEARCH_URL }),
     // Programmatic overrides (highest priority)
     ...overrides,
   };

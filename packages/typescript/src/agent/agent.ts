@@ -444,10 +444,13 @@ class ToolExecutor {
 
   private async executeWebSearch(args: Record<string, unknown>): Promise<string> {
     const query = (args.query as string) ?? '';
-    const resp = await fetch(
-      `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}`,
-      { headers: { 'User-Agent': 'Scalix-SDK/0.1' } },
-    );
+    const config = getConfig();
+    const searchUrl = config.searchBaseUrl
+      ? `${config.searchBaseUrl}?q=${encodeURIComponent(query)}`
+      : `${config.baseUrl}/v1/search?q=${encodeURIComponent(query)}`;
+    const headers: Record<string, string> = { 'User-Agent': 'Scalix-SDK/0.1' };
+    if (config.apiKey) headers['Authorization'] = `Bearer ${config.apiKey}`;
+    const resp = await fetch(searchUrl, { headers });
     const text = await resp.text();
     return text.slice(0, 5000);
   }

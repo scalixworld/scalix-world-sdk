@@ -133,7 +133,10 @@ class DirectLLM(LLMProvider):
                 raise ConfigurationError(
                     "OpenAI package not installed. Run: pip install scalix[openai]"
                 )
-            self._openai_client = AsyncOpenAI(api_key=self._config.openai_api_key)
+            kwargs: dict[str, Any] = {"api_key": self._config.openai_api_key}
+            if self._config.openai_base_url:
+                kwargs["base_url"] = self._config.openai_base_url
+            self._openai_client = AsyncOpenAI(**kwargs)
         return self._openai_client
 
     async def _call_openai(
@@ -254,7 +257,10 @@ class DirectLLM(LLMProvider):
                 raise ConfigurationError(
                     "Anthropic package not installed. Run: pip install scalix[anthropic]"
                 )
-            self._anthropic_client = AsyncAnthropic(api_key=self._config.anthropic_api_key)
+            kwargs: dict[str, Any] = {"api_key": self._config.anthropic_api_key}
+            if self._config.anthropic_base_url:
+                kwargs["base_url"] = self._config.anthropic_base_url
+            self._anthropic_client = AsyncAnthropic(**kwargs)
         return self._anthropic_client
 
     async def _call_anthropic(

@@ -414,18 +414,27 @@ class ToolExecutor:
         return rows
 
     async def _execute_web_search(self, arguments: dict[str, Any]) -> Any:
-        """Execute web search via httpx."""
+        """Execute web search via Scalix API or configurable endpoint."""
         import httpx
+        from ..config import get_config
 
         query = arguments.get("query", "")
+        config = get_config()
+        headers: dict[str, str] = {"User-Agent": "Scalix-SDK/0.1"}
+
+        if config.search_base_url:
+            search_url = config.search_base_url
+        else:
+            search_url = f"{config.base_url}/v1/search"
+        if config.api_key:
+            headers["Authorization"] = f"Bearer {config.api_key}"
+
         async with httpx.AsyncClient(timeout=15.0) as client:
-            # Use DuckDuckGo HTML search as a free fallback
             resp = await client.get(
-                "https://html.duckduckgo.com/html/",
+                search_url,
                 params={"q": query},
-                headers={"User-Agent": "Scalix-SDK/0.1"},
+                headers=headers,
             )
-            # Return raw text — the LLM will parse it
             return resp.text[:5000]
 
     async def _execute_http(self, arguments: dict[str, Any]) -> Any:

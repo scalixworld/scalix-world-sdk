@@ -5,7 +5,7 @@
  * The developer uses their own provider API keys.
  */
 
-import { getConfig, type ScalixConfig } from '../../config.js';
+import { getConfig, dynamicImport, type ScalixConfig } from '../../config.js';
 import { ConfigurationError } from '../../errors.js';
 import type { LLMProvider } from '../base.js';
 import type { Message, StreamEvent, ToolCall } from '../../types.js';
@@ -117,12 +117,10 @@ export class DirectLLM implements LLMProvider {
 
   // --- OpenAI ---
 
-  private getOpenAIClient(): unknown {
+  private async getOpenAIClient(): Promise<unknown> {
     if (!this.openaiClient) {
       try {
-        // Dynamic import at runtime
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { OpenAI } = require('openai');
+        const { OpenAI } = await dynamicImport('openai') as { OpenAI: new (opts: { apiKey?: string }) => unknown };
         this.openaiClient = new OpenAI({ apiKey: this.config.openaiApiKey });
       } catch {
         throw new ConfigurationError(
@@ -139,7 +137,7 @@ export class DirectLLM implements LLMProvider {
     tools: Record<string, unknown>[] | undefined,
     temperature: number,
   ): Promise<Message> {
-    const client = this.getOpenAIClient() as {
+    const client = await this.getOpenAIClient() as {
       chat: {
         completions: {
           create: (req: Record<string, unknown>) => Promise<{
@@ -194,7 +192,7 @@ export class DirectLLM implements LLMProvider {
     model: string,
     temperature: number,
   ): AsyncGenerator<StreamEvent> {
-    const client = this.getOpenAIClient() as {
+    const client = await this.getOpenAIClient() as {
       chat: {
         completions: {
           create: (req: Record<string, unknown>) => Promise<AsyncIterable<{
@@ -254,11 +252,10 @@ export class DirectLLM implements LLMProvider {
 
   // --- Anthropic ---
 
-  private getAnthropicClient(): unknown {
+  private async getAnthropicClient(): Promise<unknown> {
     if (!this.anthropicClient) {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { Anthropic } = require('@anthropic-ai/sdk');
+        const { default: Anthropic } = await dynamicImport('@anthropic-ai/sdk') as { default: new (opts: { apiKey?: string }) => unknown };
         this.anthropicClient = new Anthropic({ apiKey: this.config.anthropicApiKey });
       } catch {
         throw new ConfigurationError(
@@ -275,7 +272,7 @@ export class DirectLLM implements LLMProvider {
     tools: Record<string, unknown>[] | undefined,
     temperature: number,
   ): Promise<Message> {
-    const client = this.getAnthropicClient() as {
+    const client = await this.getAnthropicClient() as {
       messages: {
         create: (req: Record<string, unknown>) => Promise<{
           content: Array<
@@ -328,7 +325,7 @@ export class DirectLLM implements LLMProvider {
     model: string,
     temperature: number,
   ): AsyncGenerator<StreamEvent> {
-    const client = this.getAnthropicClient() as {
+    const client = await this.getAnthropicClient() as {
       messages: {
         stream: (req: Record<string, unknown>) => {
           on: (event: string, cb: (e: { type: string; text?: string }) => void) => unknown;
@@ -429,7 +426,7 @@ export class DirectLLM implements LLMProvider {
     }};
 
     try {
-      genai = require('@google/generative-ai');
+      genai = await dynamicImport('@google/generative-ai') as typeof genai;
     } catch {
       throw new ConfigurationError(
         'Google AI package not installed. Run: npm install @google/generative-ai',
@@ -480,7 +477,7 @@ export class DirectLLM implements LLMProvider {
     };
 
     try {
-      ({ OpenAI } = require('openai'));
+      ({ OpenAI } = await dynamicImport('openai') as any);
     } catch {
       throw new ConfigurationError(
         'OpenAI package needed for Ollama compatibility. Run: npm install openai',

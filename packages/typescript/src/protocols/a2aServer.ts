@@ -221,9 +221,8 @@ export class A2AServer {
   /**
    * Start the A2A server using Node.js built-in HTTP.
    */
-  start(port: number = 5000, host: string = '0.0.0.0'): void {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const http = require('http') as typeof import('http');
+  async start(port: number = 5000, host: string = '0.0.0.0'): Promise<void> {
+    const http = await import('http');
     const baseUrl = `http://${host}:${port}`;
 
     const server = http.createServer(async (req, res) => {

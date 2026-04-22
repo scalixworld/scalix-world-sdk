@@ -5,6 +5,7 @@
  * Uses better-sqlite3 for synchronous SQLite access (wrapped for async interface).
  */
 
+import { dynamicImport } from '../../config.js';
 import type { DatabaseProvider } from '../base.js';
 
 /**
@@ -22,7 +23,7 @@ export class SQLiteProvider implements DatabaseProvider {
   }
 
   async query(sql: string, params?: unknown[]): Promise<Record<string, unknown>[]> {
-    const db = this.getDb();
+    const db = await this.getDb();
     const stmt = db.prepare(sql);
     if (params?.length) {
       return stmt.all(...params) as Record<string, unknown>[];
@@ -31,7 +32,7 @@ export class SQLiteProvider implements DatabaseProvider {
   }
 
   async execute(sql: string, params?: unknown[]): Promise<number> {
-    const db = this.getDb();
+    const db = await this.getDb();
     const stmt = db.prepare(sql);
     let result: { changes: number };
     if (params?.length) {
@@ -42,11 +43,10 @@ export class SQLiteProvider implements DatabaseProvider {
     return result.changes;
   }
 
-  private getDb(): BetterSqliteDb {
+  private async getDb(): Promise<BetterSqliteDb> {
     if (!this.db) {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const Database = require('better-sqlite3') as new (path: string) => BetterSqliteDb;
+        const { default: Database } = await dynamicImport('better-sqlite3') as unknown as { default: new (path: string) => BetterSqliteDb };
         this.db = new Database(this.dbPath);
         this.db.pragma('journal_mode = WAL');
       } catch {

@@ -15,6 +15,7 @@
  * ```
  */
 
+import { dynamicImport } from '../config.js';
 import type { Agent } from '../agent/agent.js';
 import type { Tool } from '../tools/base.js';
 
@@ -51,13 +52,11 @@ export class MCPServer {
     this.name = options.name ?? 'scalix';
   }
 
-  private buildServer(): FastMCPInstance {
+  private async buildServer(): Promise<FastMCPInstance> {
     if (this.mcp) return this.mcp;
 
     try {
-      // The @modelcontextprotocol/sdk provides Server class
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const sdk = require('@modelcontextprotocol/sdk/server/index.js') as {
+      const sdk = await dynamicImport('@modelcontextprotocol/sdk/server/index.js') as unknown as {
         Server: new (
           info: { name: string; version: string },
           options: { capabilities: Record<string, unknown> },
@@ -166,10 +165,10 @@ export class MCPServer {
       tool: () => {
         /* Already registered above */
       },
-      run: (options?: { transport?: string }) => {
+      run: async (options?: { transport?: string }) => {
         const transport = options?.transport ?? 'stdio';
         if (transport === 'stdio') {
-          this.startStdio(server);
+          await this.startStdio(server);
         } else {
           throw new Error(`Transport '${transport}' not yet supported in TypeScript SDK`);
         }
@@ -180,11 +179,10 @@ export class MCPServer {
     return wrapper;
   }
 
-  private startStdio(server: MCPSDKServer): void {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { StdioServerTransport } = require(
-      '@modelcontextprotocol/sdk/server/stdio.js',
-    ) as {
+  private async startStdio(server: MCPSDKServer): Promise<void> {
+    const { StdioServerTransport } = await dynamicImport(
+      '@modelcontextprotocol/sdk/server/stdio.js'
+    ) as unknown as {
       StdioServerTransport: new () => { start(): void };
     };
 
@@ -200,8 +198,8 @@ export class MCPServer {
    *
    * @param transport - Transport mechanism. "stdio" for local CLI tools.
    */
-  start(transport: string = 'stdio'): void {
-    const mcp = this.buildServer();
+  async start(transport: string = 'stdio'): Promise<void> {
+    const mcp = await this.buildServer();
     mcp.run({ transport });
   }
 }

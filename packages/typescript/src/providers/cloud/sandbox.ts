@@ -5,7 +5,7 @@
  * This is a thin wrapper that delegates to the existing @scalix-world/sandbox package.
  */
 
-import { getConfig, isCloudMode, type ScalixConfig } from '../../config.js';
+import { getConfig, isCloudMode, dynamicImport, type ScalixConfig } from '../../config.js';
 import { AuthenticationError, ProviderError, SandboxError } from '../../errors.js';
 import type { SandboxProvider } from '../base.js';
 import type { SandboxResult } from '../../types.js';
@@ -72,12 +72,11 @@ export class ScalixSandboxProvider implements SandboxProvider {
     }
   }
 
-  private ensureConfigured(): void {
+  private async ensureConfigured(): Promise<void> {
     if (this.configured) return;
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { configure } = require('@scalix-world/sandbox') as {
+      const { configure } = await dynamicImport('@scalix-world/sandbox') as unknown as {
         configure: (opts: { apiKey: string; baseUrl?: string }) => void;
       };
       configure({
@@ -100,7 +99,7 @@ export class ScalixSandboxProvider implements SandboxProvider {
       gpu?: string;
     },
   ): Promise<SandboxResult> {
-    this.ensureConfigured();
+    await this.ensureConfigured();
 
     const runtime = options?.runtime ?? 'python';
     const timeout = options?.timeout ?? 30;
@@ -114,9 +113,7 @@ export class ScalixSandboxProvider implements SandboxProvider {
       );
     }
 
-    // Dynamic import of Sandbox class
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { Sandbox } = require('@scalix-world/sandbox') as {
+    const { Sandbox } = await dynamicImport('@scalix-world/sandbox') as unknown as {
       Sandbox: {
         create: (config: Record<string, unknown>) => Promise<SandboxInstance>;
       };

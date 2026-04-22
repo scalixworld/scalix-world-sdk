@@ -2,7 +2,7 @@
  * Core Agent class — the central abstraction of the Scalix SDK.
  */
 
-import { getConfig, isCloudMode } from '../config.js';
+import { getConfig, isCloudMode, dynamicImport } from '../config.js';
 import type { Tool } from '../tools/base.js';
 import type {
   AgentOptions,
@@ -59,15 +59,13 @@ export class Agent {
     this.timeout = options.timeout ?? 300;
   }
 
-  private getLLMProvider(): LLMProvider {
+  private async getLLMProvider(): Promise<LLMProvider> {
     if (!this.llmProvider) {
       if (isCloudMode()) {
-        // Cloud mode — use Scalix Router
-        const { ScalixRouterProvider } = require('../providers/cloud/router.js');
+        const { ScalixRouterProvider } = await import('../providers/cloud/router.js');
         this.llmProvider = new ScalixRouterProvider(getConfig()) as LLMProvider;
       } else {
-        // Local mode — call LLM APIs directly
-        const { DirectLLM } = require('../providers/local/directLlm.js');
+        const { DirectLLM } = await import('../providers/local/directLlm.js');
         this.llmProvider = new DirectLLM(getConfig()) as LLMProvider;
       }
     }
@@ -88,7 +86,7 @@ export class Agent {
    * until it produces a final text response or hits maxTurns.
    */
   async run(prompt: string): Promise<AgentResult> {
-    const llm = this.getLLMProvider();
+    const llm = await this.getLLMProvider();
     const executor = this.getToolExecutor();
 
     // Build initial messages
@@ -172,7 +170,7 @@ export class Agent {
    * Execute the agent and stream events as they occur.
    */
   async *stream(prompt: string): AsyncGenerator<StreamEvent> {
-    const llm = this.getLLMProvider();
+    const llm = await this.getLLMProvider();
     const executor = this.getToolExecutor();
     const messages = this.buildMessages(prompt);
 
@@ -361,11 +359,11 @@ class ToolExecutor {
   private async executeCode(
     args: Record<string, unknown>,
   ): Promise<string> {
-    const { execFile } = require('child_process') as typeof import('child_process');
-    const { promisify } = require('util') as typeof import('util');
-    const { writeFile, unlink } = require('fs/promises') as typeof import('fs/promises');
-    const { tmpdir } = require('os') as typeof import('os');
-    const { join } = require('path') as typeof import('path');
+    const { execFile } = await import('child_process');
+    const { promisify } = await import('util');
+    const { writeFile, unlink } = await import('fs/promises');
+    const { tmpdir } = await import('os');
+    const { join } = await import('path');
 
     const execFileAsync = promisify(execFile);
     const code = (args.code as string) ?? '';
@@ -424,8 +422,8 @@ class ToolExecutor {
     // Use better-sqlite3 for local mode (sync but fast)
     const query = (args.query as string) ?? '';
     try {
-      const Database = require('better-sqlite3');
-      const db = new Database('scalix_local.db');
+      const mod = await dynamicImport('better-sqlite3') as { default: new (path: string) => { prepare: (sql: string) => { all: () => unknown[]; run: () => { changes: number } }; close: () => void } };
+      const db = new mod.default('scalix_local.db');
       const stmt = db.prepare(query);
 
       if (query.trim().toUpperCase().startsWith('SELECT')) {

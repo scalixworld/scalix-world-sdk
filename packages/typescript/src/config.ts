@@ -65,6 +65,13 @@ export function isCloudMode(): boolean {
   return getConfig().apiKey != null;
 }
 
+/**
+ * Dynamic import that bypasses TypeScript module resolution.
+ * Used for optional peer dependencies that may not be installed.
+ */
+// eslint-disable-next-line @typescript-eslint/no-implied-eval
+export const dynamicImport = new Function('specifier', 'return import(specifier)') as (specifier: string) => Promise<unknown>;
+
 function loadConfig(overrides: Partial<ScalixConfig>): ScalixConfig {
   const env = typeof process !== 'undefined' ? process.env : {};
 

@@ -2,6 +2,7 @@
  * Tool base class and built-in tool factories.
  */
 
+import { dynamicImport } from '../config.js';
 import type { ToolDefinition, ToolCallResult } from '../types.js';
 
 /**
@@ -159,12 +160,10 @@ export class Tool {
     let SSEClientTransport: new (url: URL) => MCPTransport;
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const clientMod = require('@modelcontextprotocol/sdk/client/index.js') as {
+      const clientMod = await dynamicImport('@modelcontextprotocol/sdk/client/index.js') as unknown as {
         Client: typeof Client;
       };
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const sseMod = require('@modelcontextprotocol/sdk/client/sse.js') as {
+      const sseMod = await dynamicImport('@modelcontextprotocol/sdk/client/sse.js') as unknown as {
         SSEClientTransport: typeof SSEClientTransport;
       };
       Client = clientMod.Client;

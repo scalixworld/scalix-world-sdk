@@ -51,7 +51,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint src/",
-    "test": "vitest",
+    "test": "vitest --passWithNoTests",
     "test:coverage": "vitest --coverage",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"

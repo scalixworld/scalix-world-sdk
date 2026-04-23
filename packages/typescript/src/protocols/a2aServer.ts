@@ -10,7 +10,7 @@
  * import { Agent } from 'scalix';
  * import { A2AServer } from 'scalix/protocols';
  *
- * const agent = new Agent({ model: 'claude-sonnet-4' });
+ * const agent = new Agent({ model: 'scalix-world-ai' });
  * const a2a = new A2AServer({ agent });
  * a2a.start(5000);
  * ```

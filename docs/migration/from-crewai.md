@@ -32,7 +32,7 @@ result = crew.kickoff()
 from scalix import Agent
 
 agent = Agent(
-    model="claude-sonnet-4",
+    model="scalix-world-ai",
     instructions="You are an expert researcher.",
 )
 result = await agent.run("Research AI trends")
@@ -62,8 +62,8 @@ result = crew.kickoff()
 ```python
 from scalix import Agent, Team
 
-researcher = Agent(model="auto", instructions="You are a researcher.")
-writer = Agent(model="auto", instructions="You are a writer.")
+researcher = Agent(model="scalix-world-ai", instructions="You are a researcher.")
+writer = Agent(model="scalix-world-ai", instructions="You are a writer.")
 
 team = Team(
     agents={"researcher": researcher, "writer": writer},
@@ -89,7 +89,7 @@ agent = Agent(
 from scalix import Agent, Tool
 
 agent = Agent(
-    model="auto",
+    model="scalix-world-ai",
     tools=[Tool.web_search(), Tool.code_exec()],
 )
 ```

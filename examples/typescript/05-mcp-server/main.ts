@@ -5,7 +5,7 @@
  *
  * Prerequisites:
  *   npm install scalix @modelcontextprotocol/sdk
- *   export ANTHROPIC_API_KEY=your-key
+ *   export SCALIX_API_KEY=your-key
  *
  * Usage:
  *   npx tsx main.ts
@@ -21,7 +21,7 @@
 import { Agent, Tool, MCPServer } from 'scalix';
 
 const agent = new Agent({
-  model: 'auto',
+  model: 'scalix-world-ai',
   instructions: 'You are a helpful coding assistant.',
   tools: [Tool.codeExec(), Tool.webSearch()],
 });

@@ -6,13 +6,13 @@
  *
  * Prerequisites:
  *   npm install scalix
- *   export ANTHROPIC_API_KEY=your-key
+ *   export SCALIX_API_KEY=your-key
  */
 
 import { Agent } from 'scalix';
 
 const agent = new Agent({
-  model: 'claude-sonnet-4',
+  model: 'scalix-world-ai',
   instructions: 'You are a helpful assistant that gives concise, clear answers.',
 });
 

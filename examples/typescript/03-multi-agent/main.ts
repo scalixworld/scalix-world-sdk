@@ -5,25 +5,25 @@
  *
  * Prerequisites:
  *   npm install scalix
- *   export ANTHROPIC_API_KEY=your-key
+ *   export SCALIX_API_KEY=your-key
  */
 
 import { Agent, Team, Tool } from 'scalix';
 
 const researcher = new Agent({
-  model: 'auto',
+  model: 'scalix-world-ai',
   instructions: 'You are a research specialist. Find and summarize key information.',
   tools: [Tool.webSearch()],
 });
 
 const analyst = new Agent({
-  model: 'auto',
+  model: 'scalix-advanced',
   instructions: 'You are a data analyst. Analyze data and extract insights using code.',
   tools: [Tool.codeExec()],
 });
 
 const writer = new Agent({
-  model: 'auto',
+  model: 'scalix-world-ai',
   instructions: 'You are a technical writer. Create clear, structured reports.',
 });
 

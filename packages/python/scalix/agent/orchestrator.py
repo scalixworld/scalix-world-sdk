@@ -33,9 +33,9 @@ class Team:
     Example:
         from scalix import Agent, Team, Tool
 
-        researcher = Agent(model="auto", tools=[Tool.web_search()])
-        analyst = Agent(model="auto", tools=[Tool.code_exec()])
-        writer = Agent(model="auto")
+        researcher = Agent(model="scalix-world-ai", tools=[Tool.web_search()])
+        analyst = Agent(model="scalix-advanced", tools=[Tool.code_exec()])
+        writer = Agent(model="scalix-world-ai")
 
         team = Team(
             agents={

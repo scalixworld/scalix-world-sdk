@@ -41,7 +41,7 @@ print(result["output"])
 from scalix import Agent
 
 agent = Agent(
-    model="claude-sonnet-4",
+    model="scalix-world-ai",
     instructions="You are a helpful assistant.",
 )
 result = await agent.run("Hello!")
@@ -68,7 +68,7 @@ executor = AgentExecutor(agent=agent, tools=[search, python_repl])
 from scalix import Agent, Tool
 
 agent = Agent(
-    model="claude-sonnet-4",
+    model="scalix-world-ai",
     tools=[Tool.web_search(), Tool.code_exec()],
 )
 ```
@@ -136,7 +136,7 @@ chain = create_sql_query_chain(llm, db)
 from scalix import Agent, Tool, Database
 
 db = Database()  # SQLite, zero config
-agent = Agent(model="auto", tools=[Tool.sql()])
+agent = Agent(model="scalix-world-ai", tools=[Tool.sql()])
 ```
 
 ## Step-by-step migration

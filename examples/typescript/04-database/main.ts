@@ -8,7 +8,7 @@
  *
  * Prerequisites:
  *   npm install scalix better-sqlite3
- *   export ANTHROPIC_API_KEY=your-key
+ *   export SCALIX_API_KEY=your-key
  */
 
 import { Agent, Tool, Database } from 'scalix';
@@ -36,7 +36,7 @@ await db.execute(`
 `);
 
 const agent = new Agent({
-  model: 'claude-sonnet-4',
+  model: 'scalix-advanced',
   instructions:
     'You are a business analyst. Use SQL queries to answer questions about the data.',
   tools: [Tool.sql()],

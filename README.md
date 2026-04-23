@@ -15,7 +15,7 @@ pip install scalix
 from scalix import Agent, Tool
 
 agent = Agent(
-    model="claude-sonnet-4",
+    model="scalix-world-ai",
     tools=[Tool.code_exec(), Tool.web_search()],
 )
 
@@ -32,13 +32,20 @@ npm install scalix
 import { Agent, Tool } from 'scalix';
 
 const agent = new Agent({
-  model: 'claude-sonnet-4',
+  model: 'scalix-world-ai',
   tools: [Tool.codeExec(), Tool.webSearch()],
 });
 
 const result = await agent.run('Analyze trending GitHub repos and summarize the top 5');
 console.log(result.output);
 ```
+
+### Available Models
+
+| Model | Description | Best For |
+|-------|-------------|----------|
+| `scalix-world-ai` | Default model — fast, balanced | General use, chat, quick tasks |
+| `scalix-advanced` | Most capable model — deep reasoning | Complex analysis, coding, agents |
 
 ## How It Works
 

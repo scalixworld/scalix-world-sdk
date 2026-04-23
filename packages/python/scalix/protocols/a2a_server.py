@@ -12,7 +12,7 @@ Usage:
     from scalix import Agent, Tool
     from scalix.protocols import A2AServer
 
-    agent = Agent(model="claude-sonnet-4", tools=[Tool.code_exec()])
+    agent = Agent(model="scalix-world-ai", tools=[Tool.code_exec()])
     a2a = A2AServer(agent=agent)
     a2a.start(port=5000)
 """

@@ -32,7 +32,7 @@ class ScalixConfig(BaseModel):
     log_level: str = Field(default="info", description="debug | info | warn | error")
 
     # Provider preferences
-    default_model: str = Field(default="auto", description="Default LLM model")
+    default_model: str = Field(default="scalix-world-ai", description="Default LLM model")
     sandbox_mode: str = Field(
         default="auto", description="auto | docker | subprocess | cloud"
     )

@@ -3,10 +3,10 @@
  *
  * @example
  * ```typescript
- * import { Agent, Tool } from 'scalix';
+ * import { Agent, Tool, ScalixModels } from 'scalix';
  *
  * const agent = new Agent({
- *   model: 'claude-sonnet-4',
+ *   model: ScalixModels.WorldAI,
  *   tools: [Tool.codeExec(), Tool.webSearch()],
  * });
  *
@@ -30,9 +30,11 @@ export { Tool } from './tools/base.js';
 export { Database } from './providers/base.js';
 export { configure, getConfig } from './config.js';
 export type { ScalixConfig } from './config.js';
+export { ScalixModels } from './types.js';
 export type {
   AgentResult,
   AgentOptions,
+  ScalixModel,
   Message,
   ToolCall,
   ToolCallResult,

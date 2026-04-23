@@ -126,7 +126,7 @@ console.log(result.output);
     '# Scalix Cloud (optional)',
     '# SCALIX_API_KEY=sk-scalix-...',
     '',
-    '# LLM Provider (at least one required for local mode)',
+    '# BYOK Local Mode (optional, use your own provider keys)',
     '# ANTHROPIC_API_KEY=sk-ant-...',
     '# OPENAI_API_KEY=sk-...',
     '# GOOGLE_API_KEY=...',

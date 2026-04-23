@@ -6,7 +6,7 @@ Tools are defined using type hints and docstrings.
 
 Prerequisites:
     pip install scalix
-    export ANTHROPIC_API_KEY=your-key
+    export SCALIX_API_KEY=your-key
 """
 
 import asyncio
@@ -51,7 +51,7 @@ def calculate_shipping(weight: float, destination: str) -> str:
 
 async def main():
     agent = Agent(
-        model="auto",
+        model="scalix-world-ai",
         instructions=(
             "You are a helpful customer support agent. "
             "Use the available tools to assist customers."

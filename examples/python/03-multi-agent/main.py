@@ -6,7 +6,7 @@ Each agent has a specific role and expertise.
 
 Prerequisites:
     pip install scalix[local]
-    export ANTHROPIC_API_KEY=your-key
+    export SCALIX_API_KEY=your-key
 """
 
 import asyncio
@@ -16,19 +16,19 @@ from scalix import Agent, Team, Tool
 async def main():
     # Define specialized agents
     researcher = Agent(
-        model="auto",
+        model="scalix-world-ai",
         instructions="You are a research specialist. Find and summarize key information.",
         tools=[Tool.web_search()],
     )
 
     analyst = Agent(
-        model="auto",
+        model="scalix-world-ai",
         instructions="You are a data analyst. Analyze data and extract insights using code.",
         tools=[Tool.code_exec()],
     )
 
     writer = Agent(
-        model="auto",
+        model="scalix-world-ai",
         instructions="You are a technical writer. Create clear, structured reports.",
     )
 

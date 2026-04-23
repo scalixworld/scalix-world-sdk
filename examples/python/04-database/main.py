@@ -8,7 +8,7 @@ Cloud mode: uses ScalixDB (managed Postgres).
 
 Prerequisites:
     pip install scalix[local]
-    export ANTHROPIC_API_KEY=your-key
+    export SCALIX_API_KEY=your-key
 """
 
 import asyncio
@@ -40,7 +40,7 @@ async def main():
 
     # Create an agent with SQL access
     agent = Agent(
-        model="claude-sonnet-4",
+        model="scalix-advanced",
         instructions="You are a business analyst. Use SQL queries to answer questions about the data.",
         tools=[Tool.sql()],
     )

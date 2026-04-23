@@ -19,11 +19,11 @@ async def main():
     scalix.configure(api_key="sk-scalix-your-key-here")
 
     # Create a production agent
-    # - model="auto" → Scalix Router picks the best model
+    # - model="scalix-world-ai" → Scalix Router picks the best model
     # - code_exec with GPU → runs in Scalix Sandbox (Firecracker)
     # - sql with named DB → uses ScalixDB (managed Postgres)
     agent = Agent(
-        model="auto",
+        model="scalix-world-ai",
         instructions="You are an AI research assistant for production use.",
         tools=[
             Tool.code_exec(runtime="python", gpu="t4"),

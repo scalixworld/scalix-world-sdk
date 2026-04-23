@@ -27,7 +27,7 @@ import type { LLMProvider } from '../providers/base.js';
  * import { Agent, Tool } from 'scalix';
  *
  * const agent = new Agent({
- *   model: 'claude-sonnet-4',
+ *   model: 'scalix-world-ai',
  *   instructions: 'You are a helpful data analyst.',
  *   tools: [Tool.codeExec(), Tool.webSearch()],
  * });
@@ -50,7 +50,7 @@ export class Agent {
   private toolExecutor: ToolExecutor | null = null;
 
   constructor(options: AgentOptions = {}) {
-    this.model = options.model ?? 'auto';
+    this.model = options.model ?? 'scalix-world-ai';
     this.instructions = options.instructions ?? '';
     this.tools = options.tools ?? [];
     this.memory = options.memory ?? false;

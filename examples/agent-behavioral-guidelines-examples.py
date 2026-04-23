@@ -25,7 +25,7 @@ async def example_data_analyst():
 
     # Create agent with analytical methodology
     analyst = Agent(
-        model="claude-3-5-sonnet",
+        model="scalix-advanced",
         instructions=guidelines.load("data-analyst"),
         tools=[
             Tool.sql_query(database="analytics"),
@@ -80,7 +80,7 @@ async def example_api_designer_with_checkpoints():
     """
 
     designer = Agent(
-        model="claude-3-5-sonnet",
+        model="scalix-advanced",
         instructions=guidelines.load("api-designer"),
         tools=[
             Tool.code_search(),
@@ -153,7 +153,7 @@ async def example_code_migration():
     """
 
     migrator = Agent(
-        model="claude-3-5-sonnet",
+        model="scalix-advanced",
         instructions=guidelines.load("code-migrator"),
         tools=[
             Tool.codemod(),
@@ -223,7 +223,7 @@ async def example_performance_optimization():
     """
 
     optimizer = Agent(
-        model="claude-3-5-sonnet",
+        model="scalix-advanced",
         instructions=guidelines.load("performance-optimization"),
         tools=[
             Tool.profiler(),
@@ -288,19 +288,19 @@ async def example_team_of_agents():
 
     # Create specialized agents
     analyst = Agent(
-        model="claude-3-5-sonnet",
+        model="scalix-advanced",
         instructions=guidelines.load("data-analyst"),
         tools=[Tool.sql_query(), Tool.data_visualization()]
     )
 
     designer = Agent(
-        model="claude-3-5-sonnet",
+        model="scalix-advanced",
         instructions=guidelines.load("api-designer"),
         tools=[Tool.code_search(), Tool.schema_generator()]
     )
 
     optimizer = Agent(
-        model="claude-3-5-sonnet",
+        model="scalix-advanced",
         instructions=guidelines.load("performance-optimization"),
         tools=[Tool.profiler(), Tool.metrics_collector()],
         confidence_threshold=85

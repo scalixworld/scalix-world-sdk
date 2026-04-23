@@ -8,7 +8,7 @@ Cloud mode: code runs in Scalix Sandbox (Firecracker + GPU).
 
 Prerequisites:
     pip install scalix[local]
-    export ANTHROPIC_API_KEY=your-key
+    export SCALIX_API_KEY=your-key
     Docker must be running (for local mode)
 """
 
@@ -19,7 +19,7 @@ from scalix import Agent, Tool
 async def main():
     # Agent with code execution capability
     agent = Agent(
-        model="claude-sonnet-4",
+        model="scalix-advanced",
         instructions="You are a data analyst. Write and execute Python code to answer questions.",
         tools=[
             Tool.code_exec(runtime="python", timeout=30),

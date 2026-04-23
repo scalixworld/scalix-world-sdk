@@ -6,7 +6,7 @@ No Scalix account needed — runs in local mode.
 
 Prerequisites:
     pip install scalix
-    export ANTHROPIC_API_KEY=your-key   # or OPENAI_API_KEY
+    export SCALIX_API_KEY=your-key
 """
 
 import asyncio
@@ -16,7 +16,7 @@ from scalix import Agent
 async def main():
     # Create a simple agent — no tools, just conversation
     agent = Agent(
-        model="claude-sonnet-4",
+        model="scalix-world-ai",
         instructions="You are a helpful assistant that gives concise, clear answers.",
     )
 

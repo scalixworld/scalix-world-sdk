@@ -82,37 +82,63 @@ export class DirectLLM implements LLMProvider {
   private detectProvider(model: string): ProviderName {
     const m = model.toLowerCase();
 
+    // Scalix-branded models require a Scalix API key (cloud mode).
+    // In local mode, fall through to BYOK provider detection.
+    if (m.startsWith('scalix-') || m === 'auto') {
+      if (this.config.googleApiKey) return 'google';
+      if (this.config.anthropicApiKey) return 'anthropic';
+      if (this.config.openaiApiKey) return 'openai';
+      if (this.config.ollamaHost) return 'ollama';
+
+      throw new ConfigurationError(
+        'Scalix models require a Scalix API key (cloud mode) or a local provider key. ' +
+          'Call configure({ apiKey: "sk-scalix-..." }) or set SCALIX_API_KEY.',
+      );
+    }
+
+    // BYOK: detect provider from raw model name
     if (['gpt', 'o1', 'o3', 'o4'].some((p) => m.includes(p))) return 'openai';
     if (['claude', 'haiku', 'sonnet', 'opus'].some((p) => m.includes(p))) return 'anthropic';
     if (['gemini', 'palm'].some((p) => m.includes(p))) return 'google';
     if (this.config.ollamaHost) return 'ollama';
-
-    if (model === 'auto') {
-      if (this.config.anthropicApiKey) return 'anthropic';
-      if (this.config.openaiApiKey) return 'openai';
-      if (this.config.googleApiKey) return 'google';
-    }
 
     if (this.config.openaiApiKey) return 'openai';
     if (this.config.anthropicApiKey) return 'anthropic';
     if (this.config.googleApiKey) return 'google';
 
     throw new ConfigurationError(
-      'No LLM provider configured. Set one of: ' +
-        'OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY, or OLLAMA_HOST',
+      'No LLM provider configured. Set SCALIX_API_KEY for cloud mode, ' +
+        'or set OPENAI_API_KEY, ANTHROPIC_API_KEY, GOOGLE_API_KEY, or OLLAMA_HOST for local mode.',
     );
   }
 
   private resolveModel(model: string, provider: ProviderName): string {
-    if (model !== 'auto') return model;
-
-    const defaults: Record<ProviderName, string> = {
-      openai: 'gpt-4o',
-      anthropic: 'claude-sonnet-4-20250514',
-      google: 'gemini-2.5-flash',
-      ollama: 'llama3.2',
+    // Map Scalix-branded names to actual provider models for local mode
+    const scalixLocalDefaults: Record<string, Record<ProviderName, string>> = {
+      'scalix-world-ai': {
+        openai: 'gpt-4o-mini',
+        anthropic: 'claude-haiku-4-5-20251001',
+        google: 'gemini-2.5-flash-lite',
+        ollama: 'llama3.2',
+      },
+      'scalix-advanced': {
+        openai: 'gpt-4o',
+        anthropic: 'claude-sonnet-4-20250514',
+        google: 'gemini-2.5-pro',
+        ollama: 'llama3.2',
+      },
+      'auto': {
+        openai: 'gpt-4o-mini',
+        anthropic: 'claude-haiku-4-5-20251001',
+        google: 'gemini-2.5-flash-lite',
+        ollama: 'llama3.2',
+      },
     };
-    return defaults[provider] ?? model;
+
+    const mapping = scalixLocalDefaults[model.toLowerCase()];
+    if (mapping) return mapping[provider] ?? model;
+
+    return model;
   }
 
   // --- OpenAI ---

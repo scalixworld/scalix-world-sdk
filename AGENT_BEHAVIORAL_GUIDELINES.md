@@ -436,7 +436,7 @@ from scalix.guidelines import guidelines
 
 # Create agent with behavioral guidance
 analyst = Agent(
-    model="claude-3-5-sonnet",
+    model="scalix-advanced",
     instructions=guidelines.load("data-analyst"),
     tools=[
         Tool.sql_query(),
@@ -448,7 +448,7 @@ analyst = Agent(
 
 # Create specialized agents
 api_designer = Agent(
-    model="claude-3-5-sonnet",
+    model="scalix-advanced",
     instructions=guidelines.load("api-designer"),
     tools=[
         Tool.code_search(),
@@ -458,7 +458,7 @@ api_designer = Agent(
 )
 
 migrator = Agent(
-    model="claude-3-5-sonnet",
+    model="scalix-advanced",
     instructions=guidelines.load("code-migrator"),
     tools=[
         Tool.codemod(),

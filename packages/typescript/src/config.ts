@@ -31,7 +31,7 @@ const DEFAULT_CONFIG: ScalixConfig = {
   environment: 'development',
   baseUrl: 'https://api.scalix.world',
   logLevel: 'info',
-  defaultModel: 'auto',
+  defaultModel: 'scalix-world-ai',
   sandboxMode: 'auto',
   databaseMode: 'auto',
 };

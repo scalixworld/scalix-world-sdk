@@ -5,7 +5,7 @@ Usage:
     from scalix import Agent, Tool, Database
 
     agent = Agent(
-        model="claude-sonnet-4",
+        model="scalix-world-ai",
         tools=[Tool.code_exec(), Tool.web_search()],
     )
 

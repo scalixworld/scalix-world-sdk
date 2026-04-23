@@ -9,7 +9,7 @@
  * import { Agent, Tool } from 'scalix';
  * import { MCPServer } from 'scalix/protocols';
  *
- * const agent = new Agent({ model: 'claude-sonnet-4', tools: [Tool.codeExec()] });
+ * const agent = new Agent({ model: 'scalix-world-ai', tools: [Tool.codeExec()] });
  * const server = new MCPServer({ agent });
  * server.start(); // stdio transport (default)
  * ```

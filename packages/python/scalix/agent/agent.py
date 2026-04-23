@@ -44,7 +44,7 @@ class Agent:
         from scalix import Agent, Tool
 
         agent = Agent(
-            model="claude-sonnet-4",
+            model="scalix-world-ai",
             instructions="You are a helpful data analyst.",
             tools=[Tool.code_exec(), Tool.web_search()],
         )
@@ -55,7 +55,7 @@ class Agent:
 
     def __init__(
         self,
-        model: str = "auto",
+        model: str = "scalix-world-ai",
         instructions: str = "",
         tools: list[Any] | None = None,
         memory: bool = False,

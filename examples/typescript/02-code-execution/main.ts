@@ -8,14 +8,14 @@
  *
  * Prerequisites:
  *   npm install scalix
- *   export ANTHROPIC_API_KEY=your-key
+ *   export SCALIX_API_KEY=your-key
  *   Docker must be running (for local mode)
  */
 
 import { Agent, Tool } from 'scalix';
 
 const agent = new Agent({
-  model: 'claude-sonnet-4',
+  model: 'scalix-advanced',
   instructions: 'You are a data analyst. Write and execute Python code to answer questions.',
   tools: [Tool.codeExec({ runtime: 'python', timeout: 30 })],
 });

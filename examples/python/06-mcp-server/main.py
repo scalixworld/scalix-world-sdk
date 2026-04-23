@@ -6,7 +6,7 @@ Cursor, Windsurf, and other MCP clients can connect to.
 
 Prerequisites:
     pip install scalix[mcp]
-    export ANTHROPIC_API_KEY=your-key
+    export SCALIX_API_KEY=your-key
 
 Usage:
     python main.py                          # stdio mode (for Claude Code)
@@ -33,7 +33,7 @@ def calculate_compound_interest(principal: float, rate: float, years: int) -> fl
 
 # Create agent with tools
 agent = Agent(
-    model="auto",
+    model="scalix-world-ai",
     instructions="You are a financial analyst assistant.",
     tools=[
         Tool.code_exec(),

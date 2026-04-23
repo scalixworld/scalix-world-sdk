@@ -89,7 +89,7 @@ def main() -> None:
         if agent is None:
             click.echo(
                 "Error: No Agent instance found in the module.\n"
-                "Define an agent: agent = Agent(model='claude-sonnet-4')",
+                "Define an agent: agent = Agent(model='scalix-world-ai')",
                 err=True,
             )
             sys.exit(1)
@@ -345,7 +345,7 @@ def main() -> None:
 from scalix import Agent, Tool
 
 agent = Agent(
-    model="auto",
+    model="scalix-world-ai",
     instructions="You are a helpful AI assistant.",
     tools=[
         Tool.code_exec(),

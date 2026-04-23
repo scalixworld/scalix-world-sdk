@@ -32,10 +32,23 @@ export interface ToolCall {
   arguments: Record<string, unknown>;
 }
 
+// --- Scalix Models ---
+
+export type ScalixModel =
+  | 'scalix-world-ai'
+  | 'scalix-advanced'
+  | 'auto';
+
+export const ScalixModels = {
+  WorldAI: 'scalix-world-ai' as const,
+  Advanced: 'scalix-advanced' as const,
+  Auto: 'auto' as const,
+} as const;
+
 // --- Agent ---
 
 export interface AgentOptions {
-  model?: string;
+  model?: ScalixModel | string;
   instructions?: string;
   tools?: import('./tools/base.js').Tool[];
   memory?: boolean;

@@ -18,7 +18,7 @@
  *
  * // Chat completion
  * const reply = await scalix.chat.complete({
- *   model: 'gpt-4o',
+ *   model: 'scalix-world-ai',
  *   messages: [{ role: 'user', content: 'Hello!' }],
  * });
  *

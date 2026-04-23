@@ -26,7 +26,7 @@ print(response.choices[0].message.content)
 from scalix import Agent
 
 agent = Agent(
-    model="gpt-4o",  # or "auto", "claude-sonnet-4", etc.
+    model="scalix-world-ai",
     instructions="You are a helpful assistant.",
 )
 result = await agent.run("Hello!")
@@ -89,7 +89,7 @@ def get_weather(city: str) -> str:
     """Get weather for a city."""
     return f"72°F in {city}"
 
-agent = Agent(model="gpt-4o", tools=[get_weather])
+agent = Agent(model="scalix-world-ai", tools=[get_weather])
 result = await agent.run("What's the weather in SF?")
 print(result.output)
 ```
@@ -113,7 +113,7 @@ print(result.final_output)
 ```python
 from scalix import Agent
 
-agent = Agent(model="gpt-4o", instructions="You are a helpful assistant.")
+agent = Agent(model="scalix-world-ai", instructions="You are a helpful assistant.")
 result = await agent.run("Hello!")
 print(result.output)
 ```
@@ -127,7 +127,7 @@ print(result.output)
 from scalix import Agent, Tool
 
 agent = Agent(
-    model="auto",
+    model="scalix-world-ai",
     tools=[Tool.code_exec()],  # Docker locally, Firecracker in cloud
 )
 result = await agent.run("Calculate the 100th Fibonacci number")
@@ -138,7 +138,7 @@ result = await agent.run("Calculate the 100th Fibonacci number")
 | Feature | OpenAI SDK | Scalix |
 |---------|------------|--------|
 | Tool execution loop | Manual | Automatic |
-| Multi-model support | OpenAI only | OpenAI, Anthropic, Google, Ollama |
+| Multi-model support | OpenAI only | Scalix World AI, Scalix Advanced, BYOK |
 | Code execution | External | Built-in (Docker + Firecracker) |
 | Database | External | Built-in (SQLite + Postgres) |
 | Multi-agent | Limited | Team + Pipeline orchestration |
@@ -148,7 +148,7 @@ result = await agent.run("Calculate the 100th Fibonacci number")
 ## Step-by-step migration
 
 1. **Install Scalix:** `pip install scalix`
-2. **Keep your API key** — Scalix uses the same `OPENAI_API_KEY` env var
-3. **Replace chat completions** — use `Agent(model="gpt-4o").run(prompt)`
+2. **Set your Scalix API key** — `export SCALIX_API_KEY=sk-scalix-...`
+3. **Replace chat completions** — use `Agent(model="scalix-world-ai").run(prompt)`
 4. **Replace function calling** — use `@Tool.function` and let Scalix handle the loop
 5. **Add more capabilities** — `Tool.code_exec()`, `Tool.sql()`, `Tool.web_search()`

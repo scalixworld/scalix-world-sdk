@@ -7,7 +7,7 @@ Usage:
     from scalix import Agent, Tool
     from scalix.protocols import MCPServer
 
-    agent = Agent(model="claude-sonnet-4", tools=[Tool.code_exec()])
+    agent = Agent(model="scalix-world-ai", tools=[Tool.code_exec()])
     server = MCPServer(agent=agent)
     server.start()  # stdio transport (default for CLI tools)
 """

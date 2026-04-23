@@ -425,7 +425,7 @@ class ToolExecutor:
             "Content-Type": "application/json",
         }
 
-        search_url = config.search_base_url or f"{config.base_url}/research/search"
+        search_url = config.search_base_url or f"{config.base_url}/v1/research/search"
         if config.api_key:
             headers["Authorization"] = f"Bearer {config.api_key}"
 

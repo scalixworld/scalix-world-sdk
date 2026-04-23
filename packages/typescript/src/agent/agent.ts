@@ -446,7 +446,7 @@ class ToolExecutor {
     const query = (args.query as string) ?? '';
     const config = getConfig();
     const searchUrl = config.searchBaseUrl
-      ?? `${config.baseUrl}/research/search`;
+      ?? `${config.baseUrl}/v1/research/search`;
     const headers: Record<string, string> = {
       'User-Agent': 'Scalix-SDK/0.1',
       'Content-Type': 'application/json',

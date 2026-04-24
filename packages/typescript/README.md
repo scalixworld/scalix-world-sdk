@@ -1,6 +1,6 @@
 # Scalix SDK — TypeScript
 
-TypeScript client for the Scalix API. Provides typed access to chat, research, audio, text, RAG, document generation, database, storage, and account management.
+TypeScript client for the Scalix API. Provides typed access to chat, research, audio, images, text, RAG, document generation, database, storage, and account management.
 
 ## Installation
 
@@ -38,6 +38,10 @@ const transcript = await scalix.audio.transcribe(audioBlob);
 // Text-to-speech
 const audio = await scalix.audio.speak('Hello world');
 
+// Image generation
+const image = await scalix.images.generate('A sunset over mountains');
+const job = await scalix.images.generateAsync('A detailed cityscape');
+
 // Text utilities
 const sentiment = await scalix.text.sentiment('I love this product!');
 const summary = await scalix.text.summarize(longArticle);
@@ -69,12 +73,11 @@ const usage = await scalix.account.usage({ startDate: '2026-04-01' });
 ## Configuration
 
 ```typescript
-import { configure } from '@scalix-world/sdk';
+import { ScalixClient } from '@scalix-world/sdk';
 
-configure({
-  apiKey: 'sk_scalix_...',      // Required for cloud mode
-  baseUrl: 'https://api.scalix.world', // Default
-  defaultModel: 'scalix-world-ai',
+const scalix = new ScalixClient({
+  apiKey: 'sk_scalix_...',
+  baseUrl: 'https://api.scalix.world', // default
 });
 ```
 
@@ -82,13 +85,10 @@ configure({
 
 | Variable | Description |
 |----------|-------------|
-| `SCALIX_API_KEY` | Scalix API key (enables cloud mode) |
+| `SCALIX_API_KEY` | Scalix API key |
 | `SCALIX_BASE_URL` | Override API base URL (default: `https://api.scalix.world`) |
-| `SCALIX_PROJECT_ID` | Project identifier |
 
-## API Endpoints
-
-All requests go to `https://api.scalix.world` (override with `baseUrl` config or `SCALIX_BASE_URL` env var).
+## API Reference
 
 ### Chat
 
@@ -114,6 +114,16 @@ All requests go to `https://api.scalix.world` (override with `baseUrl` config or
 | POST | `/v1/audio/speak/kokoro` | `scalix.audio.speak(text)` |
 | GET | `/v1/audio/kokoro/voices` | `scalix.audio.voices()` |
 | GET | `/v1/audio/kokoro/languages` | `scalix.audio.languages()` |
+
+### Images
+
+| Method | Endpoint | SDK Method |
+|--------|----------|------------|
+| POST | `/v1/images/generate` | `scalix.images.generate(prompt)` |
+| POST | `/v1/images/generate/queue` | `scalix.images.generateAsync(prompt)` |
+| GET | `/v1/images/jobs/{jobId}` | `scalix.images.getJob(jobId)` |
+| GET | `/v1/images/jobs/{jobId}/result` | `scalix.images.getJobResult(jobId)` |
+| GET | `/v1/images/models` | `scalix.images.models()` |
 
 ### Text
 
@@ -141,7 +151,6 @@ All requests go to `https://api.scalix.world` (override with `baseUrl` config or
 | GET | `/v1/docgen/formats` | `scalix.docgen.formats()` |
 | GET | `/v1/docgen/templates` | `scalix.docgen.templates()` |
 | GET | `/v1/docgen/history` | `scalix.docgen.history()` |
-| GET | `/v1/docgen/download/{docId}` | `scalix.docgen.download(docId)` |
 | POST | `/v1/docgen/revise` | `scalix.docgen.revise(docId, prompt)` |
 | GET | `/v1/docgen/versions/{docId}` | `scalix.docgen.versions(docId)` |
 
@@ -153,21 +162,15 @@ All requests go to `https://api.scalix.world` (override with `baseUrl` config or
 
 ### ScalixDB
 
-All ScalixDB endpoints use the `/api/scalixdb/databases/*` path prefix.
-
 | Method | Endpoint | SDK Method |
 |--------|----------|------------|
 | GET | `/api/scalixdb/databases` | `scalix.database.list()` |
 | POST | `/api/scalixdb/databases` | `scalix.database.create(options)` |
 | GET | `/api/scalixdb/databases/{id}` | `scalix.database.get(id)` |
-| PATCH | `/api/scalixdb/databases/{id}` | `scalix.database.update(id, updates)` |
 | DELETE | `/api/scalixdb/databases/{id}` | `scalix.database.delete(id)` |
 | POST | `/api/scalixdb/databases/{id}/query` | `scalix.database.query(id, sql)` |
 | GET | `/api/scalixdb/databases/{id}/tables` | `scalix.database.listTables(id)` |
 | GET | `/api/scalixdb/databases/{id}/metrics` | `scalix.database.getMetrics(id)` |
-| GET | `/api/scalixdb/databases/{id}/connection` | `scalix.database.getConnection(id)` |
-| GET | `/api/scalixdb/databases/{id}/branches` | `scalix.database.listBranches(id)` |
-| GET | `/api/scalixdb/databases/{id}/backups` | `scalix.database.listBackups(id)` |
 
 ### Account
 
@@ -182,7 +185,7 @@ All ScalixDB endpoints use the `/api/scalixdb/databases/*` path prefix.
 ## Error Handling
 
 ```typescript
-import { ScalixClient } from '@scalix-world/sdk';
+import { ScalixClient, ScalixError, AuthenticationError } from '@scalix-world/sdk';
 
 const scalix = new ScalixClient({ apiKey: 'sk_scalix_...' });
 
@@ -192,13 +195,9 @@ try {
     messages: [{ role: 'user', content: 'Hello!' }],
   });
 } catch (error) {
-  if (error.status === 401) {
+  if (error instanceof AuthenticationError) {
     console.error('Invalid API key');
-  } else if (error.status === 429) {
-    console.error('Rate limited — slow down');
-  } else if (error.status === 402) {
-    console.error('Usage limit reached — upgrade your plan');
-  } else {
+  } else if (error instanceof ScalixError) {
     console.error('API error:', error.message);
   }
 }

@@ -1,13 +1,4 @@
-"""ScalixClient — unified access to all Scalix API services.
-
-Example:
-    from scalix import ScalixClient
-
-    scalix = ScalixClient(api_key="sk_scalix_...")
-
-    results = await scalix.research.search("quantum computing")
-    transcript = await scalix.audio.transcribe(audio_file)
-"""
+"""ScalixClient — unified access to all Scalix API services."""
 
 from __future__ import annotations
 
@@ -19,6 +10,7 @@ from scalix.services.audio import AudioService
 from scalix.services.chat import ChatService
 from scalix.services.database import DatabaseService
 from scalix.services.docgen import DocGenService
+from scalix.services.images import ImagesService
 from scalix.services.rag import RAGService
 from scalix.services.research import ResearchService
 from scalix.services.storage import StorageService
@@ -35,10 +27,11 @@ class ScalixClient:
         self.chat = ChatService(config)
         self.database = DatabaseService(config)
         self.docgen = DocGenService(config)
+        self.images = ImagesService(config)
         self.rag = RAGService(config)
         self.research = ResearchService(config)
         self.storage = StorageService(config)
         self.text = TextService(config)
 
     def __repr__(self) -> str:
-        return f"ScalixClient(base_url={self.research._config.base_url!r})"
+        return f"ScalixClient(base_url={self.account._config.base_url!r})"

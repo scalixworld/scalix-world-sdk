@@ -3,6 +3,7 @@ from scalix.services.audio import AudioService
 from scalix.services.chat import ChatService
 from scalix.services.database import DatabaseService
 from scalix.services.docgen import DocGenService
+from scalix.services.images import ImagesService
 from scalix.services.rag import RAGService
 from scalix.services.research import ResearchService
 from scalix.services.storage import StorageService
@@ -14,6 +15,7 @@ __all__ = [
     "ChatService",
     "DatabaseService",
     "DocGenService",
+    "ImagesService",
     "RAGService",
     "ResearchService",
     "StorageService",

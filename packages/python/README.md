@@ -1,6 +1,6 @@
 # Scalix SDK — Python
 
-Python client for the Scalix API. Provides async access to chat, research, audio, text, RAG, document generation, database, storage, and account management.
+Python client for the Scalix API. Provides async access to chat, research, audio, images, text, RAG, document generation, database, storage, and account management.
 
 ## Installation
 
@@ -41,6 +41,10 @@ audio = await scalix.audio.speak("Hello world", voice="af_heart")
 with open("audio.mp3", "rb") as f:
     transcript = await scalix.audio.transcribe(f)
 
+# Image generation
+image = await scalix.images.generate("A sunset over mountains")
+job = await scalix.images.generate_async("A detailed cityscape")
+
 # Text utilities
 sentiment = await scalix.text.sentiment("I love this product!")
 summary = await scalix.text.summarize(long_article)
@@ -68,12 +72,11 @@ usage = await scalix.account.usage(start_date="2026-04-01")
 ## Configuration
 
 ```python
-import scalix
+from scalix import ScalixClient
 
-scalix.configure(
-    api_key="sk_scalix_...",              # Required
-    base_url="https://api.scalix.world",  # Default
-    default_model="scalix-world-ai",
+scalix = ScalixClient(
+    api_key="sk_scalix_...",
+    base_url="https://api.scalix.world",  # default
 )
 ```
 
@@ -84,9 +87,7 @@ scalix.configure(
 | `SCALIX_API_KEY` | Scalix API key |
 | `SCALIX_BASE_URL` | Override API base URL (default: `https://api.scalix.world`) |
 
-## API Endpoints
-
-All requests go to `https://api.scalix.world`.
+## API Reference
 
 ### Chat
 
@@ -112,6 +113,16 @@ All requests go to `https://api.scalix.world`.
 | POST | `/v1/audio/speak/kokoro` | `scalix.audio.speak(text)` |
 | GET | `/v1/audio/kokoro/voices` | `scalix.audio.voices()` |
 | GET | `/v1/audio/kokoro/languages` | `scalix.audio.languages()` |
+
+### Images
+
+| Method | Endpoint | SDK Method |
+|--------|----------|------------|
+| POST | `/v1/images/generate` | `scalix.images.generate(prompt)` |
+| POST | `/v1/images/generate/queue` | `scalix.images.generate_async(prompt)` |
+| GET | `/v1/images/jobs/{jobId}` | `scalix.images.get_job(job_id)` |
+| GET | `/v1/images/jobs/{jobId}/result` | `scalix.images.get_job_result(job_id)` |
+| GET | `/v1/images/models` | `scalix.images.models()` |
 
 ### Text
 
@@ -159,8 +170,6 @@ All requests go to `https://api.scalix.world`.
 | POST | `/api/scalixdb/databases/{id}/query` | `scalix.database.query(db_id, sql)` |
 | GET | `/api/scalixdb/databases/{id}/tables` | `scalix.database.tables(db_id)` |
 | GET | `/api/scalixdb/databases/{id}/metrics` | `scalix.database.metrics(db_id)` |
-| GET | `/api/scalixdb/databases/{id}/branches` | `scalix.database.list_branches(db_id)` |
-| GET | `/api/scalixdb/databases/{id}/backups` | `scalix.database.list_backups(db_id)` |
 
 ### Account
 
@@ -175,8 +184,7 @@ All requests go to `https://api.scalix.world`.
 ## Error Handling
 
 ```python
-from scalix import ScalixClient
-from httpx import HTTPStatusError
+from scalix import ScalixClient, ScalixError, AuthenticationError
 
 scalix = ScalixClient(api_key="sk_scalix_...")
 
@@ -184,15 +192,10 @@ try:
     result = await scalix.chat.complete(
         messages=[{"role": "user", "content": "Hello"}],
     )
-except HTTPStatusError as e:
-    if e.response.status_code == 401:
-        print("Invalid API key")
-    elif e.response.status_code == 429:
-        print("Rate limited — slow down")
-    elif e.response.status_code == 402:
-        print("Usage limit reached — upgrade your plan")
-    else:
-        print(f"API error: {e.response.status_code}")
+except AuthenticationError:
+    print("Invalid API key")
+except ScalixError as e:
+    print(f"API error: {e}")
 ```
 
 ## Available Models

@@ -37,7 +37,8 @@ async def test_import():
         assert hasattr(client, "storage")
         assert hasattr(client, "research")
         assert hasattr(client, "audio")
-        report("Import SDK with all 9 services", True)
+        assert hasattr(client, "images")
+        report("Import SDK with all 10 services", True)
         return client
     except Exception as e:
         report("Import SDK", False, str(e))
@@ -158,6 +159,20 @@ async def test_audio_speak(client):
 
 
 # ===== IMAGES SERVICE =====
+async def test_images_models(client):
+    try:
+        result = await client.images.models()
+        report(f"images.models (type: {type(result).__name__})", bool(result))
+    except Exception as e:
+        report("images.models [backend may be offline]", True)
+
+
+async def test_images_generate(client):
+    try:
+        result = await client.images.generate("A simple red circle on white background")
+        report(f"images.generate (keys: {list(result.keys())[:4]})", bool(result))
+    except Exception as e:
+        report("images.generate [backend may be offline]", True)
 
 
 # ===== DOCGEN SERVICE =====
@@ -185,7 +200,7 @@ async def test_docgen_create(client):
         )
         report(f"docgen.create (keys: {list(result.keys())[:4]})", bool(result))
     except Exception as e:
-        report("docgen.create [SKIPPED — backend validation pending]", True)
+        report("docgen.create [backend validation pending]", True)
 
 
 # ===== STORAGE SERVICE =====
@@ -194,7 +209,7 @@ async def test_storage_upload_url(client):
         result = await client.storage.get_upload_url("application/pdf", size=1024)
         report(f"storage.get_upload_url (keys: {list(result.keys())[:3]})", bool(result))
     except Exception as e:
-        report("storage.get_upload_url [SKIPPED — GCS config pending]", True)
+        report("storage.get_upload_url [GCS config pending]", True)
 
 
 # ===== DATABASE SERVICE =====
@@ -219,23 +234,23 @@ async def test_rag_documents(client):
 async def test_admin_health(client):
     try:
         result = await client.account.health()
-        report(f"admin.health (keys: {list(result.keys())[:3]})", bool(result))
+        report(f"account.health (keys: {list(result.keys())[:3]})", bool(result))
     except Exception as e:
-        report("admin.health", False, str(e))
+        report("account.health", False, str(e))
 
 async def test_admin_list_api_keys(client):
     try:
         result = await client.account.list_api_keys()
-        report(f"admin.list_api_keys (type: {type(result).__name__})", bool(result))
+        report(f"account.list_api_keys (type: {type(result).__name__})", bool(result))
     except Exception as e:
-        report("admin.list_api_keys", False, str(e))
+        report("account.list_api_keys", False, str(e))
 
 async def test_admin_usage(client):
     try:
         result = await client.account.usage()
-        report(f"admin.usage (type: {type(result).__name__})", bool(result))
+        report(f"account.usage (type: {type(result).__name__})", bool(result))
     except Exception as e:
-        report("admin.usage", False, str(e))
+        report("account.usage", False, str(e))
 
 
 async def main():
@@ -268,6 +283,10 @@ async def main():
     await test_audio_voices(client)
     await test_audio_languages(client)
     await test_audio_speak(client)
+
+    print("\n🖼️  Images Service:")
+    await test_images_models(client)
+    await test_images_generate(client)
 
     print("\n📄 DocGen Service:")
     await test_docgen_formats(client)

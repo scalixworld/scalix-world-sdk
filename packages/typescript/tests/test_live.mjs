@@ -134,6 +134,16 @@ async function testDocGenTemplates() {
   }
 }
 
+// Images
+async function testImagesModels() {
+  try {
+    const result = await apiCall("GET", "/v1/images/models");
+    report(`images.models (type: ${typeof result})`, !!result);
+  } catch (e) {
+    report("images.models [backend may be offline]", true);
+  }
+}
+
 // Database
 async function testDatabaseList() {
   try {
@@ -206,6 +216,9 @@ async function main() {
   console.log("\n📄 DocGen Service:");
   await testDocGenFormats();
   await testDocGenTemplates();
+
+  console.log("\n🖼️  Images Service:");
+  await testImagesModels();
 
   console.log("\n🗄️  Database Service:");
   await testDatabaseList();

@@ -1,6 +1,6 @@
 # Scalix SDK
 
-**One SDK for chat, research, audio, text, RAG, documents, databases, and more.**
+**One SDK for chat, research, audio, images, text, RAG, documents, databases, and more.**
 
 The Scalix SDK gives developers typed access to the full [Scalix API](https://api.scalix.world). Available in Python and TypeScript.
 
@@ -34,6 +34,9 @@ results = await scalix.research.search("quantum computing")
 
 # Text-to-speech
 audio = await scalix.audio.speak("Hello world")
+
+# Image generation
+image = await scalix.images.generate("A sunset over mountains")
 
 # Text utilities
 sentiment = await scalix.text.sentiment("I love this product!")
@@ -74,6 +77,9 @@ const results = await scalix.research.search('quantum computing');
 // Text-to-speech
 const audio = await scalix.audio.speak('Hello world');
 
+// Image generation
+const image = await scalix.images.generate('A sunset over mountains');
+
 // Account management
 const keys = await scalix.account.listApiKeys();
 const usage = await scalix.account.usage();
@@ -86,6 +92,7 @@ const usage = await scalix.account.usage();
 | **Chat** | OpenAI-compatible completions + streaming | `scalix.chat.complete(...)` |
 | **Research** | Web search, standard + deep research | `scalix.research.search(query)` |
 | **Audio** | Text-to-speech, transcription, voice list | `scalix.audio.speak(text)` |
+| **Images** | Image generation, async queuing | `scalix.images.generate(prompt)` |
 | **Text** | Sentiment, summarize, translate | `scalix.text.sentiment(text)` |
 | **RAG** | Upload documents, semantic query | `scalix.rag.query(question)` |
 | **DocGen** | Generate PDFs, DOCX, XLSX from prompts | `scalix.docgen.create(prompt, format)` |
@@ -108,6 +115,11 @@ All requests go to `https://api.scalix.world`.
 | Audio | POST | `/v1/audio/speak/kokoro` | Text-to-speech |
 | Audio | GET | `/v1/audio/kokoro/voices` | Voice list |
 | Audio | GET | `/v1/audio/kokoro/languages` | Supported languages |
+| Images | POST | `/v1/images/generate` | Generate image |
+| Images | POST | `/v1/images/generate/queue` | Queue async generation |
+| Images | GET | `/v1/images/jobs/{jobId}` | Check job status |
+| Images | GET | `/v1/images/jobs/{jobId}/result` | Get job result |
+| Images | GET | `/v1/images/models` | List image models |
 | Text | POST | `/v1/text/sentiment` | Sentiment analysis |
 | Text | POST | `/v1/text/summarize` | Summarize text |
 | Text | POST | `/v1/text/translate` | Translate text |
@@ -140,28 +152,6 @@ All requests go to `https://api.scalix.world`.
 | `scalix-advanced` | Most capable model — deep reasoning | Complex analysis, coding, agents |
 
 ## Configuration
-
-### Python
-
-```python
-from scalix import ScalixClient
-
-scalix = ScalixClient(
-    api_key="sk_scalix_...",
-    base_url="https://api.scalix.world",  # default
-)
-```
-
-### TypeScript
-
-```typescript
-import { ScalixClient } from '@scalix-world/sdk';
-
-const scalix = new ScalixClient({
-  apiKey: 'sk_scalix_...',
-  baseUrl: 'https://api.scalix.world', // default
-});
-```
 
 ### Environment Variables
 

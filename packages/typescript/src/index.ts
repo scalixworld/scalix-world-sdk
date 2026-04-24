@@ -1,68 +1,34 @@
 /**
- * Scalix World SDK — Build, run, and deploy AI agents.
+ * Scalix SDK — TypeScript client for the Scalix API.
  *
  * @example
  * ```typescript
- * import { Agent, Tool, ScalixModels } from 'scalix';
+ * import { ScalixClient } from '@scalix-world/sdk';
  *
- * const agent = new Agent({
- *   model: ScalixModels.WorldAI,
- *   tools: [Tool.codeExec(), Tool.webSearch()],
+ * const scalix = new ScalixClient({ apiKey: 'sk_scalix_...' });
+ * const reply = await scalix.chat.complete({
+ *   model: 'scalix-world-ai',
+ *   messages: [{ role: 'user', content: 'Hello!' }],
  * });
- *
- * const result = await agent.run('Analyze trending GitHub repos');
- * console.log(result.output);
- * ```
- *
- * Connect to Scalix infrastructure:
- * ```typescript
- * import { configure } from 'scalix';
- * configure({ apiKey: 'sk_scalix_...' });
  * ```
  *
  * @packageDocumentation
  */
 
 export { ScalixClient } from './client.js';
-export { Agent } from './agent/agent.js';
-export { Team, Pipeline } from './agent/orchestrator.js';
-export { Tool } from './tools/base.js';
-export { Database } from './providers/base.js';
 export { configure, getConfig } from './config.js';
 export type { ScalixConfig } from './config.js';
-export { ScalixModels } from './types.js';
-export type {
-  AgentResult,
-  AgentOptions,
-  ScalixModel,
-  Message,
-  ToolCall,
-  ToolCallResult,
-  StreamEvent,
-  Usage,
-  TeamResult,
-  ToolDefinition,
-  SandboxResult,
-  ModelInfo,
-} from './types.js';
 export {
   ScalixError,
-  ConfigurationError,
   AuthenticationError,
-  ProviderError,
-  SandboxError,
-  RouterError,
-  ToolError,
-  DeploymentError,
 } from './errors.js';
-export { MCPServer } from './protocols/mcpServer.js';
-export { A2AServer } from './protocols/a2aServer.js';
 export {
   AccountService,
   AudioService,
   ChatService,
   DatabaseService,
   DocGenService,
+  ImagesService,
   RAGService,
   ResearchService,
   StorageService,
@@ -89,6 +55,9 @@ export type {
   DocGenResult,
   DocTemplate,
   DocFormatInfo,
+  ImageGenerateOptions,
+  ImageResult,
+  ImageJobStatus,
   RAGDocument,
   RAGQueryResult,
   RAGUploadResult,
@@ -96,4 +65,8 @@ export type {
   SummaryResult,
   TranslationResult,
   UploadUrlResult,
+  TranscriptionResult,
+  SpeechOptions,
+  SearchResult,
+  ResearchResult,
 } from './services/index.js';

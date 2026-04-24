@@ -58,11 +58,11 @@ export {
 export { MCPServer } from './protocols/mcpServer.js';
 export { A2AServer } from './protocols/a2aServer.js';
 export {
+  AccountService,
   AudioService,
   ChatService,
   DatabaseService,
   DocGenService,
-  ImagesService,
   RAGService,
   ResearchService,
   StorageService,

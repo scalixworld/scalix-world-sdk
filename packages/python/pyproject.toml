@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "scalix"
 version = "1.0.0"
-description = "The AI agent SDK — build, run, and deploy AI agents with built-in sandboxed execution, smart LLM routing, and managed persistence."
+description = "Scalix SDK — chat, research, audio, images, text, RAG, docgen, database, storage, and admin APIs for building AI applications."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -63,10 +63,7 @@ all-providers = [
 ]
 
 # Cloud mode (Scalix infrastructure)
-cloud = [
-    "scalix-sandbox>=0.1.0",
-    "scalix-router>=1.0.0",
-]
+cloud = []
 
 # Protocol support
 mcp = ["mcp>=1.0.0"]

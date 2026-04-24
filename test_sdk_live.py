@@ -2,7 +2,7 @@
 """Live SDK Test — Tests all World SDK endpoints against production.
 
 Tests:
-1. ScalixClient services (Research, Images, Audio)
+1. ScalixClient services (Research, Audio)
 2. Agent framework (chat completions)
 3. Direct API calls for endpoints not yet wrapped
 4. Error handling and edge cases
@@ -118,54 +118,6 @@ async def test_research_service(client):
                f"keys={list(result.keys()) if has_results else 'N/A'}", d)
     except Exception as e:
         record("research.deep()", "FAIL", str(e), 0)
-
-
-async def test_images_service(client):
-    """Test ImagesService endpoints."""
-    print("\n=== 4. Images Service ===")
-
-    # 4a. List models
-    try:
-        t0 = time.time()
-        result = await client.images.models()
-        d = (time.time() - t0) * 1000
-        record("images.models()", "PASS" if isinstance(result, dict) else "FAIL",
-               f"keys={list(result.keys()) if isinstance(result, dict) else 'N/A'}", d)
-    except Exception as e:
-        record("images.models()", "FAIL", str(e), 0)
-
-    # 4b. Generate image
-    try:
-        t0 = time.time()
-        result = await client.images.generate("A simple blue circle on white background")
-        d = (time.time() - t0) * 1000
-        record("images.generate()", "PASS" if isinstance(result, dict) else "FAIL",
-               f"keys={list(result.keys()) if isinstance(result, dict) else 'N/A'}", d)
-    except Exception as e:
-        record("images.generate()", "FAIL", str(e), 0)
-
-    # 4c. Async generation (queue)
-    try:
-        t0 = time.time()
-        result = await client.images.generate_async("A red square on white background")
-        d = (time.time() - t0) * 1000
-        has_job = isinstance(result, dict)
-        record("images.generate_async()", "PASS" if has_job else "FAIL",
-               f"keys={list(result.keys()) if has_job else 'N/A'}", d)
-
-        # 4d. Get job status (if we got a job_id)
-        if has_job:
-            job_id = result.get("job_id") or result.get("id") or result.get("jobId")
-            if job_id:
-                t0 = time.time()
-                job = await client.images.get_job(job_id)
-                d = (time.time() - t0) * 1000
-                record("images.get_job()", "PASS" if isinstance(job, dict) else "FAIL",
-                       f"status={job.get('status', 'N/A') if isinstance(job, dict) else 'N/A'}", d)
-            else:
-                record("images.get_job()", "SKIP", "no job_id in response", 0)
-    except Exception as e:
-        record("images.generate_async()", "FAIL", str(e), 0)
 
 
 async def test_audio_service(client):
@@ -378,17 +330,7 @@ async def test_direct_api():
         except Exception as e:
             record("POST /v1/docgen/create", "FAIL", str(e), 0)
 
-        # 6o. Images status (public)
-        try:
-            t0 = time.time()
-            resp = await http.get(f"{BASE_URL}/v1/images/status")
-            d = (time.time() - t0) * 1000
-            record("GET /v1/images/status", "PASS" if resp.status_code == 200 else "FAIL",
-                   f"status={resp.status_code}, body={resp.text[:100]}", d)
-        except Exception as e:
-            record("GET /v1/images/status", "FAIL", str(e), 0)
-
-        # 6p. Audio kokoro status (public)
+        # 6o. Audio kokoro status (public)
         try:
             t0 = time.time()
             resp = await http.get(f"{BASE_URL}/v1/audio/kokoro/status")
@@ -509,7 +451,6 @@ async def main():
     await test_sdk_config()
     client = await test_client_init()
     await test_research_service(client)
-    await test_images_service(client)
     await test_audio_service(client)
     await test_direct_api()
     await test_agent_framework()

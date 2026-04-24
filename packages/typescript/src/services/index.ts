@@ -1,12 +1,11 @@
 export { BaseService } from './base.js';
+export { AccountService } from './account.js';
 export { AudioService } from './audio.js';
 export type { TranscriptionResult, SpeechOptions } from './audio.js';
 export { ChatService } from './chat.js';
 export type { ChatMessage, ChatCompletionOptions, ChatCompletionResult } from './chat.js';
 export { DocGenService } from './docgen.js';
 export type { DocFormat, DocStyle, DocGenOptions, DocGenResult, DocTemplate, DocFormatInfo } from './docgen.js';
-export { ImagesService } from './images.js';
-export type { ImageResult, ImageGenerateOptions, ImageJobStatus } from './images.js';
 export { RAGService } from './rag.js';
 export type { RAGDocument, RAGQueryResult, RAGUploadResult } from './rag.js';
 export { ResearchService } from './research.js';

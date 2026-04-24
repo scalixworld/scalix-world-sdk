@@ -10,9 +10,6 @@
  * // Search the web
  * const results = await scalix.research.search('quantum computing');
  *
- * // Generate an image
- * const image = await scalix.images.generate('A sunset over mountains');
- *
  * // Transcribe audio
  * const transcript = await scalix.audio.transcribe(audioFile);
  *
@@ -41,14 +38,18 @@
  *
  * // Storage — upload files
  * const { uploadUrl } = await scalix.storage.getUploadUrl('application/pdf');
+ *
+ * // Account — manage API keys and usage
+ * const keys = await scalix.account.listApiKeys();
+ * const usage = await scalix.account.usage();
  * ```
  */
 
 import { configure, getConfig, type ScalixConfig } from './config.js';
+import { AccountService } from './services/account.js';
 import { AudioService } from './services/audio.js';
 import { ChatService } from './services/chat.js';
 import { DocGenService } from './services/docgen.js';
-import { ImagesService } from './services/images.js';
 import { RAGService } from './services/rag.js';
 import { ResearchService } from './services/research.js';
 import { TextService } from './services/text.js';
@@ -56,11 +57,11 @@ import { DatabaseService } from './services/database.js';
 import { StorageService } from './services/storage.js';
 
 export class ScalixClient {
+  readonly account: AccountService;
   readonly audio: AudioService;
   readonly chat: ChatService;
   readonly database: DatabaseService;
   readonly docgen: DocGenService;
-  readonly images: ImagesService;
   readonly rag: RAGService;
   readonly research: ResearchService;
   readonly storage: StorageService;
@@ -71,11 +72,11 @@ export class ScalixClient {
       configure(options);
     }
     const config = getConfig();
+    this.account = new AccountService(config);
     this.audio = new AudioService(config);
     this.chat = new ChatService(config);
     this.database = new DatabaseService(config);
     this.docgen = new DocGenService(config);
-    this.images = new ImagesService(config);
     this.rag = new RAGService(config);
     this.research = new ResearchService(config);
     this.storage = new StorageService(config);

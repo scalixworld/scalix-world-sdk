@@ -1,8 +1,8 @@
-# Scalix World SDK
+# Scalix SDK
 
-**Build AI agents in 5 minutes. Deploy to production in one command.**
+**One SDK for chat, research, audio, text, RAG, documents, databases, and more.**
 
-The Scalix World SDK is a multi-language toolkit for building AI-powered applications and agents with built-in sandboxed code execution, smart LLM routing, and managed persistence. Works locally for free — scales on Scalix when you're ready.
+The Scalix SDK gives developers typed access to the full Scalix API. Available in Python and TypeScript.
 
 ## Quick Start
 
@@ -95,11 +95,6 @@ In cloud mode, the SDK communicates with `https://api.scalix.world`. The full en
 | Research | POST | `/v1/research/search` | Web search |
 | Research | POST | `/v1/research` | Standard research |
 | Research | POST | `/v1/research/deep` | Deep research |
-| Images | POST | `/v1/images/generate` | Image generation |
-| Images | POST | `/v1/images/generate/queue` | Async image generation |
-| Images | GET | `/v1/images/jobs/{jobId}` | Job status |
-| Images | GET | `/v1/images/jobs/{jobId}/result` | Job result |
-| Images | GET | `/v1/images/models` | Image models |
 | Audio | POST | `/v1/audio/transcribe` | Speech-to-text (multipart) |
 | Audio | POST | `/v1/audio/speak/kokoro` | Text-to-speech |
 | Audio | GET | `/v1/audio/kokoro/voices` | Voice list |
@@ -121,6 +116,11 @@ In cloud mode, the SDK communicates with `https://api.scalix.world`. The full en
 | DocGen | POST | `/v1/docgen/revise` | Revise document |
 | DocGen | GET | `/v1/docgen/versions/{docId}` | Document versions |
 | ScalixDB | * | `/api/scalixdb/databases/*` | Database management |
+| Account | GET | `/health` | Service health check |
+| Account | GET | `/api/dashboard/api-keys` | List your API keys |
+| Account | POST | `/api/dashboard/api-keys` | Create API key |
+| Account | DELETE | `/api/dashboard/api-keys/{id}` | Delete API key |
+| Account | GET | `/api/billing/usage` | Usage & billing breakdown |
 
 ## Architecture
 

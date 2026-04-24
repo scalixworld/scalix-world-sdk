@@ -1,7 +1,7 @@
 {
   "name": "@scalix-world/sdk",
   "version": "1.0.0",
-  "description": "The AI agent SDK — build, run, and deploy AI agents with built-in sandboxed execution, smart LLM routing, and managed persistence.",
+  "description": "Scalix SDK — chat, research, audio, images, text, RAG, docgen, database, storage, and admin APIs for building AI applications.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

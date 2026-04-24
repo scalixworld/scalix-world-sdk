@@ -1,6 +1,6 @@
-# Scalix World SDK — TypeScript
+# Scalix SDK — TypeScript
 
-TypeScript client for the Scalix World API. Provides typed access to chat completions, research, image generation, audio, text utilities, RAG, document generation, storage, and ScalixDB.
+TypeScript client for the Scalix API. Provides typed access to chat, research, audio, text, RAG, document generation, database, storage, and account management.
 
 ## Installation
 
@@ -32,9 +32,6 @@ for await (const chunk of scalix.chat.stream({
 // Web search
 const results = await scalix.research.search('quantum computing');
 
-// Image generation
-const image = await scalix.images.generate('A sunset over mountains');
-
 // Audio transcription
 const transcript = await scalix.audio.transcribe(audioBlob);
 
@@ -60,6 +57,13 @@ const result = await scalix.database.query(db.database.id, 'SELECT * FROM users'
 
 // Storage — presigned upload URL
 const { uploadUrl } = await scalix.storage.getUploadUrl('application/pdf');
+
+// Account — manage API keys
+const keys = await scalix.account.listApiKeys();
+const newKey = await scalix.account.createApiKey({ name: 'production-key' });
+
+// Usage tracking
+const usage = await scalix.account.usage({ startDate: '2026-04-01' });
 ```
 
 ## Configuration
@@ -81,10 +85,6 @@ configure({
 | `SCALIX_API_KEY` | Scalix API key (enables cloud mode) |
 | `SCALIX_BASE_URL` | Override API base URL (default: `https://api.scalix.world`) |
 | `SCALIX_PROJECT_ID` | Project identifier |
-| `OPENAI_API_KEY` | OpenAI key for local/BYOK mode |
-| `ANTHROPIC_API_KEY` | Anthropic key for local/BYOK mode |
-| `GOOGLE_API_KEY` | Google AI key for local/BYOK mode |
-| `OLLAMA_HOST` | Ollama endpoint for local inference |
 
 ## API Endpoints
 
@@ -105,16 +105,6 @@ All requests go to `https://api.scalix.world` (override with `baseUrl` config or
 | POST | `/v1/research/search` | `scalix.research.search(query)` |
 | POST | `/v1/research` | `scalix.research.research(query)` |
 | POST | `/v1/research/deep` | `scalix.research.deep(query)` |
-
-### Images
-
-| Method | Endpoint | SDK Method |
-|--------|----------|------------|
-| POST | `/v1/images/generate` | `scalix.images.generate(prompt)` |
-| POST | `/v1/images/generate/queue` | `scalix.images.generateAsync(prompt)` |
-| GET | `/v1/images/jobs/{jobId}` | `scalix.images.getJob(jobId)` |
-| GET | `/v1/images/jobs/{jobId}/result` | `scalix.images.getJobResult(jobId)` |
-| GET | `/v1/images/models` | `scalix.images.models()` |
 
 ### Audio
 
@@ -178,6 +168,41 @@ All ScalixDB endpoints use the `/api/scalixdb/databases/*` path prefix.
 | GET | `/api/scalixdb/databases/{id}/connection` | `scalix.database.getConnection(id)` |
 | GET | `/api/scalixdb/databases/{id}/branches` | `scalix.database.listBranches(id)` |
 | GET | `/api/scalixdb/databases/{id}/backups` | `scalix.database.listBackups(id)` |
+
+### Account
+
+| Method | Endpoint | SDK Method |
+|--------|----------|------------|
+| GET | `/health` | `scalix.account.health()` |
+| GET | `/api/dashboard/api-keys` | `scalix.account.listApiKeys()` |
+| POST | `/api/dashboard/api-keys` | `scalix.account.createApiKey({ name })` |
+| DELETE | `/api/dashboard/api-keys/{id}` | `scalix.account.deleteApiKey(keyId)` |
+| GET | `/api/billing/usage` | `scalix.account.usage()` |
+
+## Error Handling
+
+```typescript
+import { ScalixClient } from '@scalix-world/sdk';
+
+const scalix = new ScalixClient({ apiKey: 'sk_scalix_...' });
+
+try {
+  const result = await scalix.chat.complete({
+    model: 'scalix-world-ai',
+    messages: [{ role: 'user', content: 'Hello!' }],
+  });
+} catch (error) {
+  if (error.status === 401) {
+    console.error('Invalid API key');
+  } else if (error.status === 429) {
+    console.error('Rate limited — slow down');
+  } else if (error.status === 402) {
+    console.error('Usage limit reached — upgrade your plan');
+  } else {
+    console.error('API error:', error.message);
+  }
+}
+```
 
 ## Available Models
 

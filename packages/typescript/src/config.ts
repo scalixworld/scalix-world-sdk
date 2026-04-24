@@ -44,7 +44,7 @@ let _config: ScalixConfig | null = null;
  * @example
  * ```typescript
  * import { configure } from 'scalix';
- * configure({ apiKey: 'sk-scalix-...' });
+ * configure({ apiKey: 'sk_scalix_...' });
  * ```
  */
 export function configure(options: Partial<ScalixConfig>): ScalixConfig {

@@ -84,7 +84,7 @@ def configure(**kwargs: Any) -> ScalixConfig:
 
     Example:
         import scalix
-        scalix.configure(api_key="sk-scalix-...")
+        scalix.configure(api_key="sk_scalix_...")
     """
     global _config
     _config = _load_config(**kwargs)

@@ -5,7 +5,7 @@
  * ```typescript
  * import { ScalixClient } from '@scalix-world/sdk';
  *
- * const scalix = new ScalixClient({ apiKey: 'sk-scalix-...' });
+ * const scalix = new ScalixClient({ apiKey: 'sk_scalix_...' });
  *
  * // Search the web
  * const results = await scalix.research.search('quantum computing');

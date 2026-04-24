@@ -13,7 +13,7 @@ npm install @scalix-world/sdk
 ```typescript
 import { ScalixClient } from '@scalix-world/sdk';
 
-const scalix = new ScalixClient({ apiKey: 'sk-scalix-...' });
+const scalix = new ScalixClient({ apiKey: 'sk_scalix_...' });
 
 // Chat completion (OpenAI-compatible)
 const reply = await scalix.chat.complete({
@@ -68,7 +68,7 @@ const { uploadUrl } = await scalix.storage.getUploadUrl('application/pdf');
 import { configure } from '@scalix-world/sdk';
 
 configure({
-  apiKey: 'sk-scalix-...',      // Required for cloud mode
+  apiKey: 'sk_scalix_...',      // Required for cloud mode
   baseUrl: 'https://api.scalix.world', // Default
   defaultModel: 'scalix-world-ai',
 });

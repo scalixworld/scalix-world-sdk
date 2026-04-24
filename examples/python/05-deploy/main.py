@@ -6,7 +6,7 @@ This example requires a Scalix account.
 
 Prerequisites:
     pip install scalix[cloud]
-    export SCALIX_API_KEY=sk-scalix-your-key
+    export SCALIX_API_KEY=sk_scalix_your_key
 """
 
 import asyncio
@@ -16,7 +16,7 @@ from scalix import Agent, Tool
 
 async def main():
     # Connect to Scalix infrastructure
-    scalix.configure(api_key="sk-scalix-your-key-here")
+    scalix.configure(api_key="sk_scalix_your_key_here")
 
     # Create a production agent
     # - model="scalix-world-ai" → Scalix Router picks the best model

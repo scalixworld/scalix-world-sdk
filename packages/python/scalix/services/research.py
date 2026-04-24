@@ -11,10 +11,10 @@ class ResearchService(BaseService):
     async def search(
         self, query: str, *, max_results: int | None = None
     ) -> dict[str, Any]:
-        body: dict[str, Any] = {"query": query}
+        params: dict[str, Any] = {"query": query}
         if max_results:
-            body["max_results"] = max_results
-        return await self._request("POST", "/v1/research/search", json=body)
+            params["max_results"] = max_results
+        return await self._request("POST", "/v1/research/search", params=params)
 
     async def research(self, query: str) -> dict[str, Any]:
         return await self._request("POST", "/v1/research", json={"query": query})

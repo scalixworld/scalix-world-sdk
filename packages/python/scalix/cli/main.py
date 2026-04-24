@@ -371,7 +371,7 @@ if __name__ == "__main__":
         with open(os.path.join(project_dir, ".env.example"), "w") as f:
             f.write(
                 "# Scalix Cloud (optional — enables Sandbox, Router, ScalixDB)\n"
-                "# SCALIX_API_KEY=sk-scalix-...\n\n"
+                "# SCALIX_API_KEY=sk_scalix_...\n\n"
                 "# LLM Provider (at least one required for local mode)\n"
                 "# ANTHROPIC_API_KEY=sk-ant-...\n"
                 "# OPENAI_API_KEY=sk-...\n"

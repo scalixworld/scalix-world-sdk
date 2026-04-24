@@ -16,14 +16,18 @@ class AudioService(BaseService):
         return await self._request_multipart("/v1/audio/transcribe", files=files, data=data)
 
     async def speak(
-        self, text: str, *, voice: str | None = None, format: str | None = None
+        self, text: str, *, voice: str | None = None, language: str = "en", speed: float = 1.0
     ) -> dict[str, Any]:
-        body: dict[str, Any] = {"text": text}
+        params: dict[str, Any] = {"text": text, "language": language, "speed": speed}
         if voice:
-            body["voice"] = voice
-        if format:
-            body["format"] = format
-        return await self._request("POST", "/v1/audio/speak/kokoro", json=body)
+            params["voice"] = voice
+        audio_bytes = await self._request_binary("POST", "/v1/audio/speak/kokoro", params=params)
+        return {
+            "audio": audio_bytes,
+            "size_bytes": len(audio_bytes),
+            "format": "wav",
+            "text": text,
+        }
 
     async def voices(self) -> dict[str, Any]:
         return await self._request("GET", "/v1/audio/kokoro/voices")

@@ -30,7 +30,7 @@ export class ScalixRouterProvider implements LLMProvider {
     this.config = config ?? getConfig();
     if (!isCloudMode()) {
       throw new AuthenticationError(
-        "Scalix Router requires an API key. Call configure({ apiKey: 'sk-scalix-...' }) first.",
+        "Scalix Router requires an API key. Call configure({ apiKey: 'sk_scalix_...' }) first.",
       );
     }
   }

@@ -274,7 +274,7 @@ agent.run("run this python code")
 ### 3.3 Cloud Mode Flow
 
 ```
-scalix.configure(api_key="sk-scalix-...")
+scalix.configure(api_key="sk_scalix_...")
 
 agent.run("run this python code")
     │

@@ -124,7 +124,7 @@ console.log(result.output);
   // Create .env.example
   const envExample = [
     '# Scalix Cloud (optional)',
-    '# SCALIX_API_KEY=sk-scalix-...',
+    '# SCALIX_API_KEY=sk_scalix_...',
     '',
     '# BYOK Local Mode (optional, use your own provider keys)',
     '# ANTHROPIC_API_KEY=sk-ant-...',

@@ -57,7 +57,7 @@ The SDK operates in two modes:
 
 ```python
 import scalix
-scalix.configure(api_key="sk-scalix-...")
+scalix.configure(api_key="sk_scalix_...")
 # Everything now runs on Scalix infrastructure
 ```
 

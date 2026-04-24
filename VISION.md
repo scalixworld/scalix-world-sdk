@@ -192,7 +192,7 @@ print(result)
 ### Connect to Scalix (One Line)
 ```python
 import scalix
-scalix.configure(api_key="sk-scalix-...")
+scalix.configure(api_key="sk_scalix_...")
 
 # Same code, now uses Scalix Router + Sandbox + ScalixDB
 ```

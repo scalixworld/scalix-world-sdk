@@ -92,7 +92,7 @@ export class DirectLLM implements LLMProvider {
 
       throw new ConfigurationError(
         'Scalix models require a Scalix API key (cloud mode) or a local provider key. ' +
-          'Call configure({ apiKey: "sk-scalix-..." }) or set SCALIX_API_KEY.',
+          'Call configure({ apiKey: "sk_scalix_..." }) or set SCALIX_API_KEY.',
       );
     }
 

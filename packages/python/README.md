@@ -13,7 +13,7 @@ pip install scalix
 ```python
 from scalix import ScalixClient
 
-scalix = ScalixClient(api_key="sk-scalix-...")
+scalix = ScalixClient(api_key="sk_scalix_...")
 
 # Web search
 results = await scalix.research.search("quantum computing")
@@ -53,7 +53,7 @@ languages = await scalix.audio.languages()
 import scalix
 
 scalix.configure(
-    api_key="sk-scalix-...",           # Required for cloud mode
+    api_key="sk_scalix_...",           # Required for cloud mode
     base_url="https://api.scalix.world",  # Default
     default_model="scalix-world-ai",
 )

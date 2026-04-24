@@ -45,6 +45,36 @@ class BaseService:
 
         return resp.json()
 
+    async def _request_binary(
+        self,
+        method: str,
+        path: str,
+        params: dict[str, Any] | None = None,
+        json: dict[str, Any] | None = None,
+    ) -> bytes:
+        import httpx
+
+        if not self._config.api_key:
+            raise AuthenticationError("API key required. Call configure(api_key='...') first.")
+
+        url = f"{self._config.base_url}{path}"
+        headers = {"Authorization": f"Bearer {self._config.api_key}"}
+
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            resp = await client.request(
+                method, url, headers=headers, params=params, json=json
+            )
+
+        if not resp.is_success:
+            try:
+                body = resp.json()
+                msg = body.get("error", {}).get("message", f"Request failed: {resp.status_code}")
+            except Exception:
+                msg = f"Request failed: {resp.status_code}"
+            raise ScalixError(msg)
+
+        return resp.content
+
     async def _request_multipart(
         self,
         path: str,

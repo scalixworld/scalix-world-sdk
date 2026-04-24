@@ -3,7 +3,7 @@
 Example:
     from scalix import ScalixClient
 
-    scalix = ScalixClient(api_key="sk-scalix-...")
+    scalix = ScalixClient(api_key="sk_scalix_...")
 
     results = await scalix.research.search("quantum computing")
     image = await scalix.images.generate("A sunset over mountains")

@@ -13,7 +13,7 @@ Usage:
 
 Connect to Scalix infrastructure:
     import scalix
-    scalix.configure(api_key="sk-scalix-...")
+    scalix.configure(api_key="sk_scalix_...")
 """
 
 from scalix._version import __version__

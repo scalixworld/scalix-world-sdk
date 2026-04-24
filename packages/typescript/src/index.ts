@@ -17,7 +17,7 @@
  * Connect to Scalix infrastructure:
  * ```typescript
  * import { configure } from 'scalix';
- * configure({ apiKey: 'sk-scalix-...' });
+ * configure({ apiKey: 'sk_scalix_...' });
  * ```
  *
  * @packageDocumentation

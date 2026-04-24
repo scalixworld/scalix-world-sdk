@@ -67,7 +67,7 @@ export class ScalixSandboxProvider implements SandboxProvider {
     this.config = config ?? getConfig();
     if (!isCloudMode()) {
       throw new AuthenticationError(
-        "Scalix Sandbox requires an API key. Call configure({ apiKey: 'sk-scalix-...' }) first.",
+        "Scalix Sandbox requires an API key. Call configure({ apiKey: 'sk_scalix_...' }) first.",
       );
     }
   }

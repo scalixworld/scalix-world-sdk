@@ -41,7 +41,7 @@ export class ScalixDatabaseProvider implements DatabaseProvider {
     this.config = config ?? getConfig();
     if (!isCloudMode()) {
       throw new AuthenticationError(
-        "ScalixDB requires an API key. Call configure({ apiKey: 'sk-scalix-...' }) first.",
+        "ScalixDB requires an API key. Call configure({ apiKey: 'sk_scalix_...' }) first.",
       );
     }
   }

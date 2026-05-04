@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scalix"
-version = "1.0.0"
-description = "Scalix SDK — Python client for chat, research, audio, images, text, RAG, docgen, database, storage, and account APIs."
+version = "2.0.0"
+description = "Scalix SDK — unified client for the Scalix platform. OpenAI-compatible chat completions + native platform services."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -36,6 +36,7 @@ classifiers = [
 ]
 dependencies = [
     "httpx>=0.25.0",
+    "openai>=1.50.0",
     "pydantic>=2.5.0",
 ]
 

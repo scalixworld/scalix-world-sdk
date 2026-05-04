@@ -1,95 +1,87 @@
 # Scalix SDK
 
-**One SDK for chat, research, audio, images, text, RAG, documents, databases, and more.**
+**One SDK, one API key.** `scalix.completions` gives you full OpenAI-compatible chat (tools, vision, streaming). The rest of the SDK gives you Research, RAG, DocGen, Database, Audio, Images — services that only Scalix has.
 
-The Scalix SDK gives developers typed access to the full [Scalix API](https://api.scalix.world). Available in Python and TypeScript.
+Available in Python and TypeScript.
 
 ## Quick Start
 
 ### Python
 
 ```bash
-pip install scalix
+pip install scalix openai
 ```
 
 ```python
-from scalix import ScalixClient
+from scalix import Scalix
 
-scalix = ScalixClient(api_key="sk_scalix_...")
+scalix = Scalix("sk_scalix_...")
 
-# Chat completion (OpenAI-compatible)
-result = await scalix.chat.complete(
-    messages=[{"role": "user", "content": "Hello!"}],
+# Chat completions — full OpenAI-compatible (tools, vision, streaming)
+response = scalix.completions.create(
     model="scalix-world-ai",
+    messages=[{"role": "user", "content": "Hello!"}],
 )
 
 # Streaming
-async for chunk in scalix.chat.stream(
+stream = scalix.completions.create(
+    model="scalix-world-ai",
     messages=[{"role": "user", "content": "Tell me a story"}],
-):
-    print(chunk, end="")
+    stream=True,
+)
+for chunk in stream:
+    print(chunk.choices[0].delta.content or "", end="")
 
-# Web search
+# Platform services — Scalix-only
 results = await scalix.research.search("quantum computing")
-
-# Text-to-speech
 audio = await scalix.audio.speak("Hello world")
-
-# Image generation
 image = await scalix.images.generate("A sunset over mountains")
-
-# Text utilities
 sentiment = await scalix.text.sentiment("I love this product!")
-
-# Account management
+models = await scalix.models.list()
 keys = await scalix.account.list_api_keys()
-usage = await scalix.account.usage()
 ```
 
 ### TypeScript
 
 ```bash
-npm install @scalix-world/sdk
+npm install @scalix-world/sdk openai
 ```
 
 ```typescript
-import { ScalixClient } from '@scalix-world/sdk';
+import { Scalix } from '@scalix-world/sdk';
 
-const scalix = new ScalixClient({ apiKey: 'sk_scalix_...' });
+const scalix = new Scalix('sk_scalix_...');
 
-// Chat completion (OpenAI-compatible)
-const reply = await scalix.chat.complete({
+// Chat completions — full OpenAI-compatible (tools, vision, streaming)
+const response = await scalix.completions.create({
   model: 'scalix-world-ai',
   messages: [{ role: 'user', content: 'Hello!' }],
 });
 
 // Streaming
-for await (const chunk of scalix.chat.stream({
+const stream = await scalix.completions.create({
   model: 'scalix-world-ai',
   messages: [{ role: 'user', content: 'Tell me a story' }],
-})) {
-  process.stdout.write(chunk);
+  stream: true,
+});
+for await (const chunk of stream) {
+  process.stdout.write(chunk.choices[0]?.delta?.content ?? '');
 }
 
-// Web search
+// Platform services — Scalix-only
 const results = await scalix.research.search('quantum computing');
-
-// Text-to-speech
 const audio = await scalix.audio.speak('Hello world');
-
-// Image generation
 const image = await scalix.images.generate('A sunset over mountains');
-
-// Account management
+const models = await scalix.models.list();
 const keys = await scalix.account.listApiKeys();
-const usage = await scalix.account.usage();
 ```
 
 ## Services
 
 | Service | Description | Example |
 |---------|-------------|---------|
-| **Chat** | OpenAI-compatible completions + streaming | `scalix.chat.complete(...)` |
+| **Completions** | OpenAI-compatible chat (tools, vision, streaming) | `scalix.completions.create(...)` |
+| **Models** | List available models with Scalix-specific fields | `scalix.models.list()` |
 | **Research** | Web search, standard + deep research | `scalix.research.search(query)` |
 | **Audio** | Text-to-speech, transcription, voice list | `scalix.audio.speak(text)` |
 | **Images** | Image generation, async queuing | `scalix.images.generate(prompt)` |
@@ -107,7 +99,7 @@ All requests go to `https://api.scalix.world`.
 | Category | Method | Endpoint | Description |
 |----------|--------|----------|-------------|
 | Chat | POST | `/v1/chat/completions` | Chat completions (OpenAI-compatible) |
-| Chat | GET | `/v1/models` | List available models |
+| Models | GET | `/v1/models` | List available models |
 | Research | POST | `/v1/research/search` | Web search |
 | Research | POST | `/v1/research` | Standard research |
 | Research | POST | `/v1/research/deep` | Deep research |
@@ -149,7 +141,7 @@ All requests go to `https://api.scalix.world`.
 | Model | Description | Best For |
 |-------|-------------|----------|
 | `scalix-world-ai` | Default model — fast, balanced | General use, chat, quick tasks |
-| `scalix-advanced` | Most capable model — deep reasoning | Complex analysis, coding, agents |
+| `scalix-world-advanced` | Most capable — deep reasoning | Complex analysis, coding, agents |
 
 ## Configuration
 
@@ -164,8 +156,8 @@ All requests go to `https://api.scalix.world`.
 
 | Package | Registry | Install |
 |---------|----------|---------|
-| `scalix` | PyPI | `pip install scalix` |
-| `@scalix-world/sdk` | npm | `npm install @scalix-world/sdk` |
+| `scalix` | PyPI | `pip install scalix openai` |
+| `@scalix-world/sdk` | npm | `npm install @scalix-world/sdk openai` |
 
 ## License
 

@@ -1,18 +1,14 @@
 export { BaseService } from './base.js';
 export { AccountService } from './account.js';
+export type { UserInfo, UserBudget, UserUsage } from './account.js';
 export { AudioService } from './audio.js';
 export type { TranscriptionResult, SpeechOptions } from './audio.js';
-export { ChatService } from './chat.js';
-export type { ChatMessage, ChatCompletionOptions, ChatCompletionResult } from './chat.js';
-export { DatabaseService } from './database.js';
-export type {
-  Database as ScalixDatabase, CreateDatabaseOptions, Branch, Backup, DatabaseMetrics,
-  PoolingStatus, EncryptionStatus, HAStatus, QueryResult, TableInfo, ColumnInfo,
-} from './database.js';
 export { DocGenService } from './docgen.js';
 export type { DocFormat, DocStyle, DocGenOptions, DocGenResult, DocTemplate, DocFormatInfo } from './docgen.js';
 export { ImagesService } from './images.js';
 export type { ImageGenerateOptions, ImageResult, ImageJobStatus } from './images.js';
+export { ModelsService } from './models.js';
+export type { ScalixModel } from './models.js';
 export { RAGService } from './rag.js';
 export type { RAGDocument, RAGQueryResult, RAGUploadResult } from './rag.js';
 export { ResearchService } from './research.js';
@@ -20,4 +16,4 @@ export type { SearchResult, ResearchResult } from './research.js';
 export { StorageService } from './storage.js';
 export type { UploadUrlResult } from './storage.js';
 export { TextService } from './text.js';
-export type { SentimentResult, SummaryResult, TranslationResult } from './text.js';
+export type { SentimentResult, SummaryResult, TranslationResult, GrammarResult, AutocompleteResult, VectorSearchContext, VectorSearchResult } from './text.js';

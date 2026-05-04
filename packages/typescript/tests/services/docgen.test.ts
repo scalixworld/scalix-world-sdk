@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { DocGenService } from '../../src/services/docgen.js';
+import type { ScalixConfig } from '../../src/config.js';
 
-vi.mock('../../src/config.js', () => ({
-  getConfig: () => ({ apiKey: 'test-key', baseUrl: 'https://api.scalix.world' }),
-}));
+const config: ScalixConfig = { apiKey: 'test-key', baseUrl: 'https://api.scalix.world' };
 
 function mockFetchJson(data: unknown, ok = true, status = 200) {
   global.fetch = vi.fn().mockResolvedValue({
     ok,
     status,
+    headers: new Headers(),
     json: () => Promise.resolve(data),
   });
 }
@@ -17,7 +17,7 @@ describe('DocGenService', () => {
   let service: DocGenService;
 
   beforeEach(() => {
-    service = new DocGenService();
+    service = new DocGenService(config);
     vi.restoreAllMocks();
   });
 

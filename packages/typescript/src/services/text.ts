@@ -21,6 +21,25 @@ export interface TranslationResult {
   confidence: number;
 }
 
+export interface GrammarResult {
+  corrected_text: string;
+  corrections: Array<{ original: string; corrected: string; rule?: string }>;
+}
+
+export interface AutocompleteResult {
+  completions: string[];
+}
+
+export interface VectorSearchContext {
+  text: string;
+  [key: string]: unknown;
+}
+
+export interface VectorSearchResult {
+  results: Array<{ content: string; score: number; metadata?: Record<string, unknown> }>;
+  total: number;
+}
+
 export class TextService extends BaseService {
   async sentiment(text: string): Promise<SentimentResult> {
     return this.request<SentimentResult>('POST', '/v1/text/sentiment', {
@@ -48,6 +67,31 @@ export class TextService extends BaseService {
         target_language: targetLanguage,
         ...(options?.sourceLanguage ? { source_language: options.sourceLanguage } : {}),
       },
+    });
+  }
+
+  async grammar(text: string): Promise<GrammarResult> {
+    return this.request<GrammarResult>('POST', '/v1/text/grammar', {
+      body: { text },
+    });
+  }
+
+  async autocomplete(
+    text: string,
+    options?: { maxCompletions?: number },
+  ): Promise<AutocompleteResult> {
+    return this.request<AutocompleteResult>('POST', '/v1/text/autocomplete', {
+      body: { text, ...options },
+    });
+  }
+
+  async vectorSearch(
+    query: string,
+    context: VectorSearchContext[],
+    options?: { topK?: number; threshold?: number },
+  ): Promise<VectorSearchResult> {
+    return this.request<VectorSearchResult>('POST', '/v1/text/vector-search', {
+      body: { query, context, ...options },
     });
   }
 }

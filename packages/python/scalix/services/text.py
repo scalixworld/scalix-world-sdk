@@ -1,4 +1,4 @@
-"""Text utilities — sentiment, summarization, translation."""
+"""Text utilities — sentiment, summarization, translation, grammar, autocomplete, vector search."""
 
 from __future__ import annotations
 
@@ -36,3 +36,32 @@ class TextService(BaseService):
         if source_language:
             body["source_language"] = source_language
         return await self._request("POST", "/v1/text/translate", json=body)
+
+    async def grammar(self, text: str) -> dict[str, Any]:
+        return await self._request("POST", "/v1/text/grammar", json={"text": text})
+
+    async def autocomplete(
+        self,
+        text: str,
+        *,
+        max_completions: int | None = None,
+    ) -> dict[str, Any]:
+        body: dict[str, Any] = {"text": text}
+        if max_completions is not None:
+            body["max_completions"] = max_completions
+        return await self._request("POST", "/v1/text/autocomplete", json=body)
+
+    async def vector_search(
+        self,
+        query: str,
+        context: list[dict[str, Any]],
+        *,
+        top_k: int | None = None,
+        threshold: float | None = None,
+    ) -> dict[str, Any]:
+        body: dict[str, Any] = {"query": query, "context": context}
+        if top_k is not None:
+            body["top_k"] = top_k
+        if threshold is not None:
+            body["threshold"] = threshold
+        return await self._request("POST", "/v1/text/vector-search", json=body)

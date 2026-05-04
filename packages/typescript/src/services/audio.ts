@@ -21,9 +21,11 @@ export class AudioService extends BaseService {
   }
 
   async speak(text: string, options?: SpeechOptions): Promise<Response> {
-    return this.requestRaw('POST', '/v1/audio/speak/kokoro', {
-      body: { text, ...options },
-    });
+    const params = new URLSearchParams({ text });
+    if (options?.voice) params.set('voice', options.voice);
+    if (options?.format) params.set('format', options.format);
+    if (options?.speed != null) params.set('speed', String(options.speed));
+    return this.requestRaw('POST', `/v1/audio/speak/kokoro?${params}`);
   }
 
   async voices(): Promise<{ voices: Array<{ id: string; name: string }> }> {

@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { StorageService } from '../../src/services/storage.js';
+import type { ScalixConfig } from '../../src/config.js';
 
-vi.mock('../../src/config.js', () => ({
-  getConfig: () => ({ apiKey: 'test-key', baseUrl: 'https://api.scalix.world' }),
-}));
+const config: ScalixConfig = { apiKey: 'test-key', baseUrl: 'https://api.scalix.world' };
 
 function mockFetchJson(data: unknown, ok = true, status = 200) {
   global.fetch = vi.fn().mockResolvedValue({
     ok,
     status,
+    headers: new Headers(),
     json: () => Promise.resolve(data),
   });
 }
@@ -17,7 +17,7 @@ describe('StorageService', () => {
   let service: StorageService;
 
   beforeEach(() => {
-    service = new StorageService();
+    service = new StorageService(config);
     vi.restoreAllMocks();
   });
 
@@ -109,17 +109,7 @@ describe('StorageService', () => {
   });
 
   it('throws AuthenticationError when API key is missing', async () => {
-    vi.resetModules();
-    const { StorageService: FreshStorageService } = await import('../../src/services/storage.js');
-    const noKeyService = new FreshStorageService({
-      baseUrl: 'https://api.scalix.world',
-      environment: 'development',
-      logLevel: 'info',
-      defaultModel: 'auto',
-      sandboxMode: 'auto',
-      databaseMode: 'auto',
-    });
-
+    const noKeyService = new StorageService({ apiKey: '', baseUrl: 'https://api.scalix.world' });
     await expect(noKeyService.getUploadUrl('image/png')).rejects.toThrow('API key required');
   });
 });

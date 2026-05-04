@@ -50,6 +50,11 @@ class DocGenService(BaseService):
             params["offset"] = offset
         return await self._request("GET", "/v1/docgen/history", params=params)
 
+    async def share(self, doc_id: str, target_email: str) -> dict[str, Any]:
+        return await self._request(
+            "POST", "/v1/docgen/share", json={"doc_id": doc_id, "target_email": target_email}
+        )
+
     async def revise(self, doc_id: str, prompt: str) -> dict[str, Any]:
         return await self._request(
             "POST", "/v1/docgen/revise", json={"doc_id": doc_id, "prompt": prompt}
@@ -57,3 +62,6 @@ class DocGenService(BaseService):
 
     async def versions(self, doc_id: str) -> dict[str, Any]:
         return await self._request("GET", f"/v1/docgen/versions/{doc_id}")
+
+    async def download(self, doc_id: str) -> bytes:
+        return await self._request_binary("GET", f"/v1/docgen/download/{doc_id}")

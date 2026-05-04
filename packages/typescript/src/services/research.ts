@@ -15,9 +15,9 @@ export interface ResearchResult {
 
 export class ResearchService extends BaseService {
   async search(query: string, options?: { maxResults?: number }): Promise<SearchResult> {
-    return this.request('POST', '/v1/research/search', {
-      body: { query, max_results: options?.maxResults },
-    });
+    const params = new URLSearchParams({ query });
+    if (options?.maxResults != null) params.set('max_results', String(options.maxResults));
+    return this.request<SearchResult>('POST', `/v1/research/search?${params}`);
   }
 
   async research(query: string): Promise<ResearchResult> {

@@ -1,18 +1,32 @@
-"""Scalix SDK — Python client for the Scalix API."""
+"""Scalix SDK — Python client for the Scalix platform."""
 
 from scalix._version import __version__
-from scalix.client import ScalixClient
-from scalix.config import configure, get_config
+from scalix.client import Scalix, ScalixClient
+from scalix.config import ScalixConfig
 from scalix.exceptions import (
     AuthenticationError,
+    BadRequestError,
+    ConflictError,
+    InternalServerError,
+    NotFoundError,
+    PermissionDeniedError,
+    RateLimitError,
     ScalixError,
+    UnprocessableEntityError,
 )
 
 __all__ = [
     "__version__",
+    "Scalix",
     "ScalixClient",
-    "configure",
-    "get_config",
+    "ScalixConfig",
     "ScalixError",
     "AuthenticationError",
+    "BadRequestError",
+    "ConflictError",
+    "InternalServerError",
+    "NotFoundError",
+    "PermissionDeniedError",
+    "RateLimitError",
+    "UnprocessableEntityError",
 ]

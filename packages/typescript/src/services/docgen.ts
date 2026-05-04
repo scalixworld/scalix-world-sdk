@@ -72,6 +72,15 @@ export class DocGenService extends BaseService {
     return this.requestRaw('GET', `/v1/docgen/download/${docId}`);
   }
 
+  async share(
+    docId: string,
+    targetEmail: string,
+  ): Promise<{ success: boolean; message: string; shared_with_uid: string }> {
+    return this.request('POST', '/v1/docgen/share', {
+      body: { doc_id: docId, target_email: targetEmail },
+    });
+  }
+
   async revise(docId: string, prompt: string): Promise<DocGenResult> {
     return this.request<DocGenResult>('POST', '/v1/docgen/revise', {
       body: { doc_id: docId, prompt },

@@ -1,6 +1,6 @@
 # Scalix SDK — TypeScript
 
-One SDK, one API key. `scalix.completions` gives you full OpenAI-compatible chat (tools, vision, streaming). The rest of the SDK gives you Research, RAG, DocGen, Database, Audio, Images — services that only Scalix has.
+One SDK, one API key. `scalix.completions` gives you full OpenAI-compatible chat (tools, vision, streaming). The rest of the SDK gives you Research, RAG, DocGen, Audio, Images, Text — services that only Scalix has.
 
 ## Installation
 
@@ -30,92 +30,96 @@ const stream = await scalix.completions.create({
 for await (const chunk of stream) {
   process.stdout.write(chunk.choices[0]?.delta?.content ?? '');
 }
-
-// Tool calling
-const toolResponse = await scalix.completions.create({
-  model: 'scalix-world-ai',
-  messages: [{ role: 'user', content: 'What is the weather?' }],
-  tools: [{
-    type: 'function',
-    function: {
-      name: 'get_weather',
-      parameters: { type: 'object', properties: { city: { type: 'string' } } },
-    },
-  }],
-});
-
-// Vision
-const visionResponse = await scalix.completions.create({
-  model: 'scalix-world-ai',
-  messages: [{
-    role: 'user',
-    content: [
-      { type: 'text', text: 'What is in this image?' },
-      { type: 'image_url', image_url: { url: 'https://...' } },
-    ],
-  }],
-});
 ```
 
 ## Platform Services
 
 These are Scalix-only services — no other SDK can reach them.
 
+### Research — web search and deep research
+
 ```typescript
-// Research — web search and deep research
 const results = await scalix.research.search('quantum computing');
 const report = await scalix.research.deep('AI trends 2026');
+const answer = await scalix.research.research('What is GraphQL?');
+```
 
-// Audio — transcription and text-to-speech
-const transcript = await scalix.audio.transcribe(audioBlob);
-const audio = await scalix.audio.speak('Hello world');
+### Text — sentiment, summarization, translation, grammar, autocomplete
 
-// Images — generation with sync and async modes
-const image = await scalix.images.generate('A sunset over mountains');
-const job = await scalix.images.generateAsync('A detailed cityscape');
-
-// Text — sentiment, summarization, translation
+```typescript
 const sentiment = await scalix.text.sentiment('I love this product!');
 const summary = await scalix.text.summarize(longArticle);
 const translated = await scalix.text.translate('Hello', 'es');
+const grammar = await scalix.text.grammar('Me and him goes to store');
+const completion = await scalix.text.autocomplete('The quick brown');
+```
 
-// RAG — upload and query documents
+### Audio — transcription and text-to-speech
+
+```typescript
+const transcript = await scalix.audio.transcribe(audioBlob);
+const audio = await scalix.audio.speak('Hello world', { voice: 'af_heart' });
+const voices = await scalix.audio.voices();
+const languages = await scalix.audio.languages();
+```
+
+### Images — generation with sync and async modes
+
+```typescript
+const image = await scalix.images.generate('A sunset over mountains');
+const job = await scalix.images.generateAsync('A detailed cityscape');
+const status = await scalix.images.getJob(job.job_id);
+const models = await scalix.images.models();
+```
+
+### Document Generation — PDF, DOCX, CSV, XLSX
+
+```typescript
+const doc = await scalix.docgen.create({ prompt: 'Q1 report', format: 'pdf' });
+const history = await scalix.docgen.history();
+const formats = await scalix.docgen.formats();
+const templates = await scalix.docgen.templates();
+await scalix.docgen.share(doc.doc_id, 'colleague@company.com');
+```
+
+### RAG — upload and query documents
+
+```typescript
 const doc = await scalix.rag.upload(pdfBlob, { filename: 'report.pdf' });
 const answer = await scalix.rag.query('revenue growth');
+const docs = await scalix.rag.documents();
+await scalix.rag.deleteDocument(docId);
+```
 
-// Document generation — PDF, DOCX, reports
-const pdf = await scalix.docgen.create({ prompt: 'Q1 report', format: 'pdf' });
+### Storage — presigned upload URLs
 
-// ScalixDB — managed databases
-const dbs = await scalix.database.list();
-const db = await scalix.database.create({ name: 'my-app-db' });
-const result = await scalix.database.query(db.database.id, 'SELECT * FROM users');
-
-// Storage — presigned upload URLs
+```typescript
 const { uploadUrl } = await scalix.storage.getUploadUrl('application/pdf');
+```
 
-// Account — API keys and usage
-const keys = await scalix.account.listApiKeys();
-const usage = await scalix.account.usage({ startDate: '2026-04-01' });
+### Account — health, info, budget, usage
 
-// Models — list available models with Scalix-specific fields
+```typescript
+const health = await scalix.account.health();
+const info = await scalix.account.info();     // email, plan
+const budget = await scalix.account.budget(); // credits remaining
+const usage = await scalix.account.usage();   // usage stats
+```
+
+### Models — list available models
+
+```typescript
 const models = await scalix.models.list();
-// Each model includes: context_window, max_output_tokens, plan_required, description
+// Each model includes: id, context_window, max_output_tokens, plan_required
 ```
 
 ## Configuration
 
 ```typescript
-import { Scalix } from '@scalix-world/sdk';
-
 const scalix = new Scalix('sk_scalix_...', {
   baseURL: 'https://api.scalix.world', // default
-});
-
-// For advanced OpenAI SDK usage (embeddings, raw access, etc.)
-const embedding = await scalix.openai.embeddings.create({
-  model: 'text-embedding-ada-002',
-  input: 'Hello world',
+  maxRetries: 2,                        // auto-retry with exponential backoff
+  timeout: 60000,                       // request timeout in ms
 });
 ```
 
@@ -126,52 +130,26 @@ const embedding = await scalix.openai.embeddings.create({
 | `scalix-world-ai` | Default model — fast, balanced | General use, chat, quick tasks |
 | `scalix-world-advanced` | Most capable — deep reasoning | Complex analysis, coding, agents |
 
+Plus 12 more models — run `scalix.models.list()` to see all available for your plan.
+
 ## Error Handling
 
 ```typescript
-import { Scalix, ScalixError, AuthenticationError } from '@scalix-world/sdk';
-
-const scalix = new Scalix('sk_scalix_...');
+import { Scalix, ScalixError, AuthenticationError, RateLimitError } from '@scalix-world/sdk';
 
 try {
-  // Chat errors come from the OpenAI SDK
-  await scalix.completions.create({ ... });
-} catch (error) {
-  // OpenAI SDK errors for chat
-}
-
-try {
-  // Platform service errors use Scalix error classes
   await scalix.research.search('...');
 } catch (error) {
   if (error instanceof AuthenticationError) {
     console.error('Invalid API key');
+  } else if (error instanceof RateLimitError) {
+    console.error('Rate limited — SDK retries automatically');
   } else if (error instanceof ScalixError) {
     console.error('API error:', error.message);
   }
 }
 ```
 
-## Migration from v1
-
-```typescript
-// v1
-import { ScalixClient } from '@scalix-world/sdk';
-const scalix = new ScalixClient({ apiKey: '...' });
-await scalix.chat.complete({ model: '...', messages: [...] });
-await scalix.chat.stream({ ... });
-await scalix.chat.models();
-
-// v2
-import { Scalix } from '@scalix-world/sdk';
-const scalix = new Scalix('sk_scalix_...');
-await scalix.completions.create({ model: '...', messages: [...] });
-await scalix.completions.create({ model: '...', messages: [...], stream: true });
-await scalix.models.list();
-
-// All platform services (research, rag, database, etc.) are unchanged.
-```
-
 ## License
 
-See [LICENSE](../../LICENSE) for details.
+MIT — see [LICENSE](./LICENSE) for details.

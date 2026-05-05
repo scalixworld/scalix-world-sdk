@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from scalix.services.base import BaseService
+from scalix_sdk.services.base import BaseService
 
 
 class DocGenService(BaseService):

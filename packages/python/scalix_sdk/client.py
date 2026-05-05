@@ -11,16 +11,16 @@ from typing import Any
 
 from openai import OpenAI
 
-from scalix.config import ScalixConfig
-from scalix.services.account import AccountService
-from scalix.services.audio import AudioService
-from scalix.services.docgen import DocGenService
-from scalix.services.images import ImagesService
-from scalix.services.models import ModelsService
-from scalix.services.rag import RAGService
-from scalix.services.research import ResearchService
-from scalix.services.storage import StorageService
-from scalix.services.text import TextService
+from scalix_sdk.config import ScalixConfig
+from scalix_sdk.services.account import AccountService
+from scalix_sdk.services.audio import AudioService
+from scalix_sdk.services.docgen import DocGenService
+from scalix_sdk.services.images import ImagesService
+from scalix_sdk.services.models import ModelsService
+from scalix_sdk.services.rag import RAGService
+from scalix_sdk.services.research import ResearchService
+from scalix_sdk.services.storage import StorageService
+from scalix_sdk.services.text import TextService
 
 
 class Scalix:

@@ -53,7 +53,7 @@ async def raw_api_call(method, path, json=None, params=None, headers=None):
 
 async def test_import():
     try:
-        from scalix import Scalix
+        from scalix_sdk import Scalix
         if not API_KEY:
             report("Import SDK", False, "SCALIX_API_KEY not set")
             return None

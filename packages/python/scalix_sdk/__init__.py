@@ -1,9 +1,9 @@
 """Scalix SDK — Python client for the Scalix platform."""
 
-from scalix._version import __version__
-from scalix.client import Scalix, ScalixClient
-from scalix.config import ScalixConfig
-from scalix.exceptions import (
+from scalix_sdk._version import __version__
+from scalix_sdk.client import Scalix, ScalixClient
+from scalix_sdk.config import ScalixConfig
+from scalix_sdk.exceptions import (
     AuthenticationError,
     BadRequestError,
     ConflictError,

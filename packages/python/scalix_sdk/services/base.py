@@ -8,8 +8,8 @@ from typing import Any
 
 import httpx
 
-from scalix.config import ScalixConfig
-from scalix.exceptions import (
+from scalix_sdk.config import ScalixConfig
+from scalix_sdk.exceptions import (
     AuthenticationError,
     BadRequestError,
     ConflictError,

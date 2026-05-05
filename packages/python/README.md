@@ -5,13 +5,13 @@ One SDK, one API key. `scalix.completions` gives you full OpenAI-compatible chat
 ## Installation
 
 ```bash
-pip install scalix
+pip install scalix-sdk
 ```
 
 ## Quick Start
 
 ```python
-from scalix import Scalix
+from scalix_sdk import Scalix
 
 scalix = Scalix("sk_scalix_...")
 
@@ -136,7 +136,7 @@ Plus 12 more models — run `await scalix.models.list()` to see all available fo
 ## Error Handling
 
 ```python
-from scalix import Scalix, ScalixError, AuthenticationError, RateLimitError
+from scalix_sdk import Scalix, ScalixError, AuthenticationError, RateLimitError
 
 try:
     await scalix.research.search("...")

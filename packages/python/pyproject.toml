@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "scalix"
+name = "scalix-sdk"
 version = "2.0.0"
-description = "Scalix SDK — unified client for the Scalix platform. OpenAI-compatible chat completions + native platform services."
+description = "Scalix SDK — unified client for the Scalix AI platform. Chat completions, research, RAG, document generation, text intelligence, audio TTS, image generation, and more."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -51,12 +51,12 @@ dev = [
 
 [project.urls]
 Homepage = "https://scalix.world"
-Documentation = "https://docs.scalix.world/sdk"
-Repository = "https://github.com/scalixworld/scalix-sdk"
-Issues = "https://github.com/scalixworld/scalix-sdk/issues"
+Documentation = "https://github.com/scalixworld/scalix-world-sdk#readme"
+Repository = "https://github.com/scalixworld/scalix-world-sdk"
+Issues = "https://github.com/scalixworld/scalix-world-sdk/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["scalix"]
+packages = ["scalix_sdk"]
 
 [tool.ruff]
 target-version = "py310"

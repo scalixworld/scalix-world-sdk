@@ -1,6 +1,6 @@
 {
   "name": "@scalix-world/sdk",
-  "version": "2.0.0",
+  "version": "1.1.0",
   "description": "Scalix SDK — unified client for the Scalix AI platform. Chat completions, research, RAG, document generation, text intelligence, audio TTS, image generation, and more.",
   "type": "module",
   "main": "./dist/index.js",

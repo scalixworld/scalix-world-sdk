@@ -1,164 +1,41 @@
-# Scalix SDK
+# Scalix Cloud SDKs
 
-**One SDK, one API key.** `scalix.completions` gives you full OpenAI-compatible chat (tools, vision, streaming). The rest of the SDK gives you Research, RAG, DocGen, Database, Audio, Images — services that only Scalix has.
+Official SDK source mirrors for [Scalix Cloud](https://scalix.world) — the agent-native cloud platform: database, functions, AI, storage, auth and more, behind one API key.
 
-Available in Python and TypeScript.
+| SDK | Package | Install | Docs |
+|---|---|---|---|
+| [TypeScript](./typescript) | [`@scalix-world/sdk`](https://www.npmjs.com/package/@scalix-world/sdk) | `npm install @scalix-world/sdk` | [docs.scalix.world/sdks/typescript](https://docs.scalix.world/sdks/typescript) |
+| [Python](./python) | [`scalix-sdk`](https://pypi.org/project/scalix-sdk/) | `pip install scalix-sdk` | [docs.scalix.world/sdks/python](https://docs.scalix.world/sdks/python) |
+| [Auth (TS)](./auth) | [`@scalix-world/auth`](https://www.npmjs.com/package/@scalix-world/auth) | `npm install @scalix-world/auth` | [docs.scalix.world/auth](https://docs.scalix.world/auth) |
 
-## Quick Start
+## Quick start
 
-### Python
+```ts
+import { configureScalix, executeSql, getMe } from "@scalix-world/sdk";
 
-```bash
-pip install scalix openai
+configureScalix({ apiKey: process.env.SCALIX_API_KEY });
+const me = await getMe();
 ```
 
 ```python
-from scalix import Scalix
+from scalix_sdk import create_client
+from scalix_sdk.generated.api.account import get_me
 
-scalix = Scalix("sk_scalix_...")
-
-# Chat completions — full OpenAI-compatible (tools, vision, streaming)
-response = scalix.completions.create(
-    model="scalix-world-ai",
-    messages=[{"role": "user", "content": "Hello!"}],
-)
-
-# Streaming
-stream = scalix.completions.create(
-    model="scalix-world-ai",
-    messages=[{"role": "user", "content": "Tell me a story"}],
-    stream=True,
-)
-for chunk in stream:
-    print(chunk.choices[0].delta.content or "", end="")
-
-# Platform services — Scalix-only
-results = await scalix.research.search("quantum computing")
-audio = await scalix.audio.speak("Hello world")
-image = await scalix.images.generate("A sunset over mountains")
-sentiment = await scalix.text.sentiment("I love this product!")
-models = await scalix.models.list()
-keys = await scalix.account.list_api_keys()
+client = create_client(token=os.environ["SCALIX_API_KEY"])
+me = get_me.sync(client=client)
 ```
 
-### TypeScript
+Each SDK's own README ([TypeScript](./typescript/README.md) · [Python](./python/README.md)) covers retries, idempotency, typed errors, and the full function catalog.
 
-```bash
-npm install @scalix-world/sdk openai
-```
+Get an API key free at [console.scalix.world](https://console.scalix.world). Full API reference: [docs.scalix.world](https://docs.scalix.world) · Live OpenAPI 3.1 spec: [`api.scalix.world/openapi.json`](https://api.scalix.world/openapi.json).
 
-```typescript
-import { Scalix } from '@scalix-world/sdk';
+## About this repository
 
-const scalix = new Scalix('sk_scalix_...');
+This is the public source mirror for the Scalix SDKs. The SDK clients are generated from the platform's OpenAPI specification and developed in the Scalix platform monorepo; this mirror is refreshed with each release, and **releases ship to npm and PyPI** (currently `1.3.4`).
 
-// Chat completions — full OpenAI-compatible (tools, vision, streaming)
-const response = await scalix.completions.create({
-  model: 'scalix-world-ai',
-  messages: [{ role: 'user', content: 'Hello!' }],
-});
-
-// Streaming
-const stream = await scalix.completions.create({
-  model: 'scalix-world-ai',
-  messages: [{ role: 'user', content: 'Tell me a story' }],
-  stream: true,
-});
-for await (const chunk of stream) {
-  process.stdout.write(chunk.choices[0]?.delta?.content ?? '');
-}
-
-// Platform services — Scalix-only
-const results = await scalix.research.search('quantum computing');
-const audio = await scalix.audio.speak('Hello world');
-const image = await scalix.images.generate('A sunset over mountains');
-const models = await scalix.models.list();
-const keys = await scalix.account.listApiKeys();
-```
-
-## Services
-
-| Service | Description | Example |
-|---------|-------------|---------|
-| **Completions** | OpenAI-compatible chat (tools, vision, streaming) | `scalix.completions.create(...)` |
-| **Models** | List available models with Scalix-specific fields | `scalix.models.list()` |
-| **Research** | Web search, standard + deep research | `scalix.research.search(query)` |
-| **Audio** | Text-to-speech, transcription, voice list | `scalix.audio.speak(text)` |
-| **Images** | Image generation, async queuing | `scalix.images.generate(prompt)` |
-| **Text** | Sentiment, summarize, translate | `scalix.text.sentiment(text)` |
-| **RAG** | Upload documents, semantic query | `scalix.rag.query(question)` |
-| **DocGen** | Generate PDFs, DOCX, XLSX from prompts | `scalix.docgen.create(prompt, format)` |
-| **Database** | Managed Postgres (ScalixDB) | `scalix.database.query(id, sql)` |
-| **Storage** | Presigned upload URLs | `scalix.storage.get_upload_url(mime)` |
-| **Account** | API keys, usage tracking, health | `scalix.account.usage()` |
-
-## API Endpoints
-
-All requests go to `https://api.scalix.world`.
-
-| Category | Method | Endpoint | Description |
-|----------|--------|----------|-------------|
-| Chat | POST | `/v1/chat/completions` | Chat completions (OpenAI-compatible) |
-| Models | GET | `/v1/models` | List available models |
-| Research | POST | `/v1/research/search` | Web search |
-| Research | POST | `/v1/research` | Standard research |
-| Research | POST | `/v1/research/deep` | Deep research |
-| Audio | POST | `/v1/audio/transcribe` | Speech-to-text (multipart) |
-| Audio | POST | `/v1/audio/speak/kokoro` | Text-to-speech |
-| Audio | GET | `/v1/audio/kokoro/voices` | Voice list |
-| Audio | GET | `/v1/audio/kokoro/languages` | Supported languages |
-| Images | POST | `/v1/images/generate` | Generate image |
-| Images | POST | `/v1/images/generate/queue` | Queue async generation |
-| Images | GET | `/v1/images/jobs/{jobId}` | Check job status |
-| Images | GET | `/v1/images/jobs/{jobId}/result` | Get job result |
-| Images | GET | `/v1/images/models` | List image models |
-| Text | POST | `/v1/text/sentiment` | Sentiment analysis |
-| Text | POST | `/v1/text/summarize` | Summarize text |
-| Text | POST | `/v1/text/translate` | Translate text |
-| RAG | POST | `/v1/rag/upload` | Upload document (multipart) |
-| RAG | POST | `/v1/rag/query` | Query documents |
-| RAG | GET | `/v1/rag/documents` | List documents |
-| RAG | DELETE | `/v1/rag/documents/{docId}` | Delete document |
-| DocGen | POST | `/v1/docgen/create` | Create document |
-| DocGen | POST | `/v1/docgen/preview` | Preview document |
-| DocGen | GET | `/v1/docgen/formats` | Supported formats |
-| DocGen | GET | `/v1/docgen/templates` | Templates |
-| DocGen | GET | `/v1/docgen/history` | Generation history |
-| DocGen | POST | `/v1/docgen/revise` | Revise document |
-| DocGen | GET | `/v1/docgen/versions/{docId}` | Document versions |
-| Storage | POST | `/v1/storage/upload-url` | Presigned upload URL |
-| ScalixDB | GET | `/api/scalixdb/databases` | List databases |
-| ScalixDB | POST | `/api/scalixdb/databases` | Create database |
-| ScalixDB | POST | `/api/scalixdb/databases/{id}/query` | Run SQL query |
-| Account | GET | `/health` | Service health check |
-| Account | GET | `/api/dashboard/api-keys` | List your API keys |
-| Account | POST | `/api/dashboard/api-keys` | Create API key |
-| Account | DELETE | `/api/dashboard/api-keys/{id}` | Delete API key |
-| Account | GET | `/api/billing/usage` | Usage & billing breakdown |
-
-## Available Models
-
-| Model | Description | Best For |
-|-------|-------------|----------|
-| `scalix-world-ai` | Default model — fast, balanced | General use, chat, quick tasks |
-| `scalix-world-advanced` | Most capable — deep reasoning | Complex analysis, coding, agents |
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-| `SCALIX_API_KEY` | Scalix API key |
-| `SCALIX_BASE_URL` | Override API base URL |
-
-## Packages
-
-| Package | Registry | Install |
-|---------|----------|---------|
-| `scalix` | PyPI | `pip install scalix openai` |
-| `@scalix-world/sdk` | npm | `npm install @scalix-world/sdk openai` |
+- **Issues and PRs are welcome here** — bug reports, typing fixes, and doc improvements are triaged and folded into the next release.
+- The MCP server for AI agents is documented at [docs.scalix.world/mcp](https://docs.scalix.world/mcp) (`https://api.scalix.world/v1/mcp`).
 
 ## License
 
-MIT
+MIT — see [LICENSE](./LICENSE).

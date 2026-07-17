@@ -1,18 +1,5 @@
 node_modules/
 dist/
-*.tgz
-.env
-.env.*
-!.env.example
-
-# Python
 __pycache__/
-*.pyc
-*.pyo
 *.egg-info/
 .venv/
-*.egg
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-

@@ -1,0 +1,18 @@
+{
+  "//": "CommonJS emit for require() consumers. tsc downlevels the ESM source to",
+  "//2": "require()/exports; the generated code's explicit .js specifiers resolve",
+  "//3": "under node module resolution. Outputs dist/cjs.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0",
+    "outDir": "./dist/cjs",
+    "declaration": true,
+    "declarationMap": true,
+    "verbatimModuleSyntax": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["src/**/*.ts"]
+}

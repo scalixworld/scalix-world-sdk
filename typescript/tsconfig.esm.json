@@ -1,0 +1,15 @@
+{
+  "//": "ESM emit. Same module settings as the base (proven to load in plain Node",
+  "//2": "via the generated code's explicit .js import extensions). Outputs dist/esm.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "outDir": "./dist/esm",
+    "declaration": true,
+    "declarationMap": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["src/**/*.ts"]
+}

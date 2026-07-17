@@ -31,7 +31,7 @@ Get an API key free at [console.scalix.world](https://console.scalix.world). Ful
 
 ## About this repository
 
-This is the public source mirror for the Scalix SDKs. The SDK clients are generated from the platform's OpenAPI specification and developed in the Scalix platform monorepo; this mirror is refreshed with each release, and **releases ship to npm and PyPI** (currently `1.3.4`).
+This is the public source mirror for the Scalix SDKs. The SDK clients are generated from the platform's OpenAPI specification and developed in the Scalix platform monorepo; this mirror is refreshed with each release, and **releases ship to npm and PyPI** (currently `1.3.5`).
 
 - **Issues and PRs are welcome here** — bug reports, typing fixes, and doc improvements are triaged and folded into the next release.
 - The MCP server for AI agents is documented at [docs.scalix.world/mcp](https://docs.scalix.world/mcp) (`https://api.scalix.world/v1/mcp`).

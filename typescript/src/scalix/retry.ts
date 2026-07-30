@@ -64,7 +64,48 @@ export function computeBackoffMs(
   return Math.round(expo * (0.5 + random() * 0.5));
 }
 
-const defaultSleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+const defaultSleep = (ms: number, signal: AbortSignal): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const onDone = () => {
+      signal.removeEventListener('abort', onAbort);
+      resolve();
+    };
+    const timer = setTimeout(onDone, ms);
+    const onAbort = () => {
+      clearTimeout(timer);
+      signal.removeEventListener('abort', onAbort);
+      reject(signal.reason);
+    };
+    signal.addEventListener('abort', onAbort, { once: true });
+    if (signal.aborted) onAbort();
+  });
+
+async function sleepUnlessAborted(
+  ms: number,
+  sleep: RetryOptions['sleep'],
+  signal: AbortSignal,
+): Promise<void> {
+  if (!sleep) {
+    await defaultSleep(ms, signal);
+    return;
+  }
+  signal.throwIfAborted();
+
+  let removeAbortListener = () => {};
+  const aborted = new Promise<never>((_, reject) => {
+    const onAbort = () => reject(signal.reason);
+    signal.addEventListener('abort', onAbort, { once: true });
+    removeAbortListener = () => signal.removeEventListener('abort', onAbort);
+    // Close the race between the check above and listener registration.
+    if (signal.aborted) onAbort();
+  });
+
+  try {
+    await Promise.race([sleep(ms), aborted]);
+  } finally {
+    removeAbortListener();
+  }
+}
 
 /**
  * Wrap a `fetch` implementation with retry/backoff. Retries `Retry-After`-aware
@@ -80,7 +121,7 @@ export function createRetryingFetch(
   const maxDelayMs = options.maxDelayMs ?? 8_000;
   const isRetryable = options.isRetryable ?? isRetryableStatus;
   const random = options.random ?? Math.random;
-  const sleep = options.sleep ?? defaultSleep;
+  const sleep = options.sleep;
 
   return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     // Normalize to a Request so the body can be cloned for each attempt.
@@ -88,6 +129,7 @@ export function createRetryingFetch(
 
     let attempt = 0;
     for (;;) {
+      original.signal.throwIfAborted();
       try {
         // Clone per attempt: the original is never consumed, so it stays replayable.
         const response = await baseFetch(original.clone());
@@ -105,12 +147,17 @@ export function createRetryingFetch(
         } catch {
           /* ignore */
         }
-        await sleep(delay);
+        await sleepUnlessAborted(delay, sleep, original.signal);
         attempt += 1;
       } catch (error) {
+        original.signal.throwIfAborted();
         // Network-level failure (fetch threw). Retry with plain backoff.
         if (attempt >= maxRetries) throw error;
-        await sleep(computeBackoffMs(attempt, baseDelayMs, maxDelayMs, random));
+        await sleepUnlessAborted(
+          computeBackoffMs(attempt, baseDelayMs, maxDelayMs, random),
+          sleep,
+          original.signal,
+        );
         attempt += 1;
       }
     }

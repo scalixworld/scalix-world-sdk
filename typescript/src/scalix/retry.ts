@@ -66,6 +66,29 @@ export function computeBackoffMs(
 
 const defaultSleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
+async function sleepUnlessAborted(
+  ms: number,
+  sleep: (ms: number) => Promise<void>,
+  signal: AbortSignal,
+): Promise<void> {
+  signal.throwIfAborted();
+
+  let removeAbortListener = () => {};
+  const aborted = new Promise<never>((_, reject) => {
+    const onAbort = () => reject(signal.reason);
+    signal.addEventListener('abort', onAbort, { once: true });
+    removeAbortListener = () => signal.removeEventListener('abort', onAbort);
+    // Close the race between the check above and listener registration.
+    if (signal.aborted) onAbort();
+  });
+
+  try {
+    await Promise.race([sleep(ms), aborted]);
+  } finally {
+    removeAbortListener();
+  }
+}
+
 /**
  * Wrap a `fetch` implementation with retry/backoff. Retries `Retry-After`-aware
  * on retryable statuses and on network errors (thrown by `fetch`). The request
@@ -88,6 +111,7 @@ export function createRetryingFetch(
 
     let attempt = 0;
     for (;;) {
+      original.signal.throwIfAborted();
       try {
         // Clone per attempt: the original is never consumed, so it stays replayable.
         const response = await baseFetch(original.clone());
@@ -105,12 +129,17 @@ export function createRetryingFetch(
         } catch {
           /* ignore */
         }
-        await sleep(delay);
+        await sleepUnlessAborted(delay, sleep, original.signal);
         attempt += 1;
       } catch (error) {
+        original.signal.throwIfAborted();
         // Network-level failure (fetch threw). Retry with plain backoff.
         if (attempt >= maxRetries) throw error;
-        await sleep(computeBackoffMs(attempt, baseDelayMs, maxDelayMs, random));
+        await sleepUnlessAborted(
+          computeBackoffMs(attempt, baseDelayMs, maxDelayMs, random),
+          sleep,
+          original.signal,
+        );
         attempt += 1;
       }
     }

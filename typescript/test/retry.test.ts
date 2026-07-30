@@ -127,4 +127,42 @@ describe('createRetryingFetch', () => {
     await expect(f(new Request('https://api.scalix.world/x'))).rejects.toThrow('down');
     expect(base).toHaveBeenCalledTimes(2); // initial + 1 retry
   });
+
+  it('does not start a request or backoff for a pre-aborted signal', async () => {
+    const controller = new AbortController();
+    controller.abort(new DOMException('cancelled', 'AbortError'));
+    const request = new Request('https://api.scalix.world/x', { signal: controller.signal });
+    const base = vi.fn<typeof fetch>();
+    const sleep = vi.fn(noSleep);
+    const f = createRetryingFetch(base as unknown as typeof fetch, { sleep });
+
+    await expect(f(request)).rejects.toBe(request.signal.reason);
+    expect(base).not.toHaveBeenCalled();
+    expect(sleep).not.toHaveBeenCalled();
+  });
+
+  it('stops a Retry-After delay when the signal is aborted', async () => {
+    const controller = new AbortController();
+    let markSleepStarted = () => {};
+    const sleepStarted = new Promise<void>((resolve) => {
+      markSleepStarted = resolve;
+    });
+    const sleep = vi.fn(async () => {
+      markSleepStarted();
+      await new Promise<void>(() => {});
+    });
+    const base = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(jsonResponse(429, {}, { 'retry-after': '60' }));
+    const f = createRetryingFetch(base as unknown as typeof fetch, { sleep });
+    const request = new Request('https://api.scalix.world/x', { signal: controller.signal });
+    const pending = f(request);
+
+    await sleepStarted;
+    controller.abort(new DOMException('cancelled', 'AbortError'));
+
+    await expect(pending).rejects.toBe(request.signal.reason);
+    expect(base).toHaveBeenCalledTimes(1);
+    expect(sleep).toHaveBeenCalledTimes(1);
+  });
 });

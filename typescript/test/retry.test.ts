@@ -141,28 +141,25 @@ describe('createRetryingFetch', () => {
     expect(sleep).not.toHaveBeenCalled();
   });
 
-  it('stops a Retry-After delay when the signal is aborted', async () => {
-    const controller = new AbortController();
-    let markSleepStarted = () => {};
-    const sleepStarted = new Promise<void>((resolve) => {
-      markSleepStarted = resolve;
-    });
-    const sleep = vi.fn(async () => {
-      markSleepStarted();
-      await new Promise<void>(() => {});
-    });
-    const base = vi
-      .fn<typeof fetch>()
-      .mockResolvedValueOnce(jsonResponse(429, {}, { 'retry-after': '60' }));
-    const f = createRetryingFetch(base as unknown as typeof fetch, { sleep });
-    const request = new Request('https://api.scalix.world/x', { signal: controller.signal });
-    const pending = f(request);
+  it('stops a Retry-After delay and clears its timer when aborted', async () => {
+    vi.useFakeTimers();
+    try {
+      const controller = new AbortController();
+      const base = vi
+        .fn<typeof fetch>()
+        .mockResolvedValueOnce(jsonResponse(429, {}, { 'retry-after': '60' }));
+      const request = new Request('https://api.scalix.world/x', { signal: controller.signal });
+      const pending = createRetryingFetch(base as unknown as typeof fetch)(request);
 
-    await sleepStarted;
-    controller.abort(new DOMException('cancelled', 'AbortError'));
+      await vi.advanceTimersByTimeAsync(0);
+      expect(vi.getTimerCount()).toBe(1);
+      controller.abort(new Error('caller cancelled'));
 
-    await expect(pending).rejects.toBe(request.signal.reason);
-    expect(base).toHaveBeenCalledTimes(1);
-    expect(sleep).toHaveBeenCalledTimes(1);
+      await expect(pending).rejects.toBe(request.signal.reason);
+      expect(base).toHaveBeenCalledTimes(1);
+      expect(vi.getTimerCount()).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

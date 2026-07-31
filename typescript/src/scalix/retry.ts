@@ -85,6 +85,15 @@ export function createRetryingFetch(
   return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     // Normalize to a Request so the body can be cloned for each attempt.
     const original = input instanceof Request ? input : new Request(input, init);
+    const isAbortError = (error: unknown): boolean => {
+      if (!(error instanceof Error)) {
+        return false;
+      }
+      if (error.name === 'AbortError') {
+        return true;
+      }
+      return error.message.includes('AbortError') || error.message.includes('abort');
+    };
 
     let attempt = 0;
     for (;;) {
@@ -108,6 +117,10 @@ export function createRetryingFetch(
         await sleep(delay);
         attempt += 1;
       } catch (error) {
+        if (isAbortError(error)) {
+          throw error;
+        }
+
         // Network-level failure (fetch threw). Retry with plain backoff.
         if (attempt >= maxRetries) throw error;
         await sleep(computeBackoffMs(attempt, baseDelayMs, maxDelayMs, random));

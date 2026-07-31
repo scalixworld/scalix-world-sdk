@@ -120,6 +120,19 @@ describe('createRetryingFetch', () => {
     expect(res.status).toBe(200);
   });
 
+  it('does not retry an aborted request', async () => {
+    const abortErr = new Error('Request aborted');
+    abortErr.name = 'AbortError';
+    const base = vi.fn<typeof fetch>().mockRejectedValueOnce(abortErr);
+    const sleep = vi.fn(noSleep);
+    const f = createRetryingFetch(base as unknown as typeof fetch, { maxRetries: 2, sleep });
+
+    const req = new Request('https://api.scalix.world/x');
+    await expect(f(req)).rejects.toThrow('Request aborted');
+    expect(base).toHaveBeenCalledTimes(1);
+    expect(sleep).not.toHaveBeenCalled();
+  });
+
   it('propagates a network error after exhausting retries', async () => {
     const base = vi.fn<typeof fetch>().mockRejectedValue(new TypeError('down'));
     const f = createRetryingFetch(base as unknown as typeof fetch, { maxRetries: 1, sleep: noSleep });

@@ -85,6 +85,7 @@ export function createRetryingFetch(
   return async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     // Normalize to a Request so the body can be cloned for each attempt.
     const original = input instanceof Request ? input : new Request(input, init);
+    const signal = original.signal;
     const isAbortError = (error: unknown): boolean => {
       if (!(error instanceof Error)) {
         return false;
@@ -94,10 +95,19 @@ export function createRetryingFetch(
       }
       return error.message.includes('AbortError') || error.message.includes('abort');
     };
+    const throwIfAborted = () => {
+      if (!signal.aborted) {
+        return;
+      }
+      const err = new Error('Request aborted');
+      err.name = 'AbortError';
+      throw err;
+    };
 
     let attempt = 0;
     for (;;) {
       try {
+        throwIfAborted();
         // Clone per attempt: the original is never consumed, so it stays replayable.
         const response = await baseFetch(original.clone());
         if (attempt >= maxRetries || !isRetryable(response.status)) {
@@ -114,6 +124,7 @@ export function createRetryingFetch(
         } catch {
           /* ignore */
         }
+        throwIfAborted();
         await sleep(delay);
         attempt += 1;
       } catch (error) {

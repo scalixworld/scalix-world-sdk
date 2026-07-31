@@ -133,6 +133,24 @@ describe('createRetryingFetch', () => {
     expect(sleep).not.toHaveBeenCalled();
   });
 
+  it('does not retry after an abort during backoff window', async () => {
+    const controller = new AbortController();
+    const base = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(jsonResponse(503))
+      .mockResolvedValueOnce(jsonResponse(200));
+    const sleep = vi.fn(async () => {
+      controller.abort();
+    });
+    const f = createRetryingFetch(base as unknown as typeof fetch, { sleep });
+
+    await expect(
+      f(new Request('https://api.scalix.world/x', { signal: controller.signal })),
+    ).rejects.toThrow('Request aborted');
+    expect(base).toHaveBeenCalledTimes(1);
+    expect(sleep).toHaveBeenCalledTimes(1);
+  });
+
   it('propagates a network error after exhausting retries', async () => {
     const base = vi.fn<typeof fetch>().mockRejectedValue(new TypeError('down'));
     const f = createRetryingFetch(base as unknown as typeof fetch, { maxRetries: 1, sleep: noSleep });

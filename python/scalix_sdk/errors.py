@@ -63,7 +63,7 @@ class APIStatusError(ScalixError):
         self.status_code = response.status_code
         self.request_id = response.headers.get("x-request-id")
         self.code: str | None = None
-        self.body: dict | None = None
+        self.body: dict[str, object] | None = None
         try:
             data = response.json()
         except Exception:

@@ -7971,7 +7971,7 @@ export type PutObjectData = {
     /**
      * Raw object bytes
      */
-    body: string;
+    body: Blob | File;
     path: {
         /**
          * Bucket name

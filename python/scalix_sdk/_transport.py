@@ -57,7 +57,7 @@ def parse_retry_after(value: str | None, now: float | None = None) -> float | No
 
 def backoff_seconds(attempt: int, base: float, cap: float, rand: Callable[[], float]) -> float:
     """Exponential backoff with jitter in [50%, 100%] of the capped term."""
-    expo = min(cap, base * (2 ** attempt))
+    expo: float = min(cap, base * (2 ** attempt))
     return expo * (0.5 + rand() * 0.5)
 
 

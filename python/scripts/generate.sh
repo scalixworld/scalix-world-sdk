@@ -61,4 +61,15 @@ uvx openapi-python-client@0.29.0 generate \
     --output-path scalix_sdk/generated \
     --overwrite
 
+python3 - <<'PY'
+from pathlib import Path
+
+path = Path("scalix_sdk/generated/api/storage/put_object.py")
+source = path.read_text(encoding="utf-8")
+old = '_kwargs["content"] = body.payload'
+if source.count(old) != 1 or source.count("body: File,") != 5:
+    raise SystemExit("Unexpected put_object generator output; review binary upload serialization")
+path.write_text(source.replace(old, old + ".read()"), encoding="utf-8")
+PY
+
 echo "Generated -> scalix_sdk/generated/ (re-exported as the package public API)"

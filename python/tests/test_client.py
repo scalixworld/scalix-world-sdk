@@ -8,13 +8,18 @@ generated operation.
 
 from __future__ import annotations
 
+from io import BytesIO
+from typing import get_type_hints
+
 import httpx
 import pytest
 
 from scalix_sdk import AuthenticationError, create_client
 from scalix_sdk._transport import USER_AGENT
 from scalix_sdk.generated.api.database import execute_sql
+from scalix_sdk.generated.api.storage import put_object
 from scalix_sdk.generated.models import SqlRequest
+from scalix_sdk.generated.types import File
 
 
 def test_factory_sets_user_agent_auth_and_idempotency():
@@ -101,3 +106,67 @@ async def test_async_factory_client_works():
     async with client:
         response = await client.get_async_httpx_client().get("https://api.scalix.world/x")
     assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    "operation",
+    [put_object.sync, put_object.sync_detailed, put_object.asyncio, put_object.asyncio_detailed],
+)
+def test_storage_upload_body_type(operation):
+    assert get_type_hints(operation)["body"] is File
+
+
+def test_storage_upload_sends_raw_bytes():
+    payload = b"\x00\xff\x80\xfe\r\nraw object"
+    calls: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(200)
+
+    client = create_client("scalix_sk_test", transport=httpx.MockTransport(handler))
+    with client:
+        response = put_object.sync_detailed(
+            bucket="test-bucket",
+            key="folder/raw bytes?#.bin",
+            client=client,
+            body=File(payload=BytesIO(payload), file_name="ignored.bin", mime_type="text/plain"),
+        )
+
+    assert response.status_code == 200
+    assert len(calls) == 1
+    assert calls[0].method == "PUT"
+    assert str(calls[0].url) == (
+        "https://api.scalix.world/v1/storage/buckets/test-bucket/objects/"
+        "folder%2Fraw%20bytes%3F%23.bin"
+    )
+    assert calls[0].headers["content-type"] == "application/octet-stream"
+    assert calls[0].content == payload
+
+
+async def test_async_storage_upload_sends_raw_bytes():
+    payload = b"\x00\xff\x80\xfe\r\nraw object"
+    calls: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        return httpx.Response(200)
+
+    client = create_client("scalix_sk_test", async_transport=httpx.MockTransport(handler))
+    async with client:
+        response = await put_object.asyncio_detailed(
+            bucket="test-bucket",
+            key="folder/raw bytes?#.bin",
+            client=client,
+            body=File(payload=BytesIO(payload), file_name="ignored.bin", mime_type="text/plain"),
+        )
+
+    assert response.status_code == 200
+    assert len(calls) == 1
+    assert calls[0].method == "PUT"
+    assert str(calls[0].url) == (
+        "https://api.scalix.world/v1/storage/buckets/test-bucket/objects/"
+        "folder%2Fraw%20bytes%3F%23.bin"
+    )
+    assert calls[0].headers["content-type"] == "application/octet-stream"
+    assert calls[0].content == payload

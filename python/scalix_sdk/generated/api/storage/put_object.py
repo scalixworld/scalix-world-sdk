@@ -7,14 +7,14 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...types import Response
+from ...types import File, Response
 
 
 def _get_kwargs(
     bucket: str,
     key: str,
     *,
-    body: str,
+    body: File,
 ) -> dict[str, Any]:
     headers: dict[str, Any] = {}
 
@@ -26,7 +26,7 @@ def _get_kwargs(
         ),
     }
 
-    _kwargs["content"] = body.payload
+    _kwargs["content"] = body.payload.read()
     headers["Content-Type"] = "application/octet-stream"
 
     _kwargs["headers"] = headers
@@ -72,7 +72,7 @@ def sync_detailed(
     key: str,
     *,
     client: AuthenticatedClient,
-    body: str,
+    body: File,
 ) -> Response[Any | ErrorResponse]:
     """Upload an object.
 
@@ -81,7 +81,7 @@ def sync_detailed(
     Args:
         bucket (str):
         key (str):
-        body (str):
+        body (File):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -109,7 +109,7 @@ def sync(
     key: str,
     *,
     client: AuthenticatedClient,
-    body: str,
+    body: File,
 ) -> Any | ErrorResponse | None:
     """Upload an object.
 
@@ -118,7 +118,7 @@ def sync(
     Args:
         bucket (str):
         key (str):
-        body (str):
+        body (File):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -141,7 +141,7 @@ async def asyncio_detailed(
     key: str,
     *,
     client: AuthenticatedClient,
-    body: str,
+    body: File,
 ) -> Response[Any | ErrorResponse]:
     """Upload an object.
 
@@ -150,7 +150,7 @@ async def asyncio_detailed(
     Args:
         bucket (str):
         key (str):
-        body (str):
+        body (File):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -176,7 +176,7 @@ async def asyncio(
     key: str,
     *,
     client: AuthenticatedClient,
-    body: str,
+    body: File,
 ) -> Any | ErrorResponse | None:
     """Upload an object.
 
@@ -185,7 +185,7 @@ async def asyncio(
     Args:
         bucket (str):
         key (str):
-        body (str):
+        body (File):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

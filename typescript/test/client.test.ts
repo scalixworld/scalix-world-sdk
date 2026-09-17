@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createScalixClient } from '../src/scalix/client.js';
 import { VERSION } from '../src/version.js';
-import { executeSql, getMe } from '../src/generated/index.js';
+import { executeSql, getMe, putObject } from '../src/generated/index.js';
 
 const noSleep = async () => {};
 
@@ -13,6 +13,34 @@ function json(status: number, body: unknown = {}, headers?: Record<string, strin
 }
 
 describe('createScalixClient end-to-end wiring', () => {
+  it('uploads a Blob as raw non-UTF8 bytes', async () => {
+    const payload = new Uint8Array([0, 255, 128, 254, 13, 10]);
+    const seen: Request[] = [];
+    const fakeFetch = vi.fn<typeof fetch>(async (input) => {
+      seen.push(input as Request);
+      return new Response(null, { status: 200 });
+    });
+    const client = createScalixClient({
+      apiKey: 'scalix_sk_test',
+      fetch: fakeFetch,
+      sleep: noSleep,
+    });
+
+    await putObject({
+      client,
+      path: { bucket: 'test-bucket', key: 'folder/raw bytes?#.bin' },
+      body: new Blob([payload]),
+    });
+
+    expect(seen).toHaveLength(1);
+    expect(seen[0].method).toBe('PUT');
+    expect(seen[0].url).toBe(
+      'https://api.scalix.world/v1/storage/buckets/test-bucket/objects/folder%2Fraw%20bytes%3F%23.bin',
+    );
+    expect(seen[0].headers.get('content-type')).toBe('application/octet-stream');
+    expect(new Uint8Array(await seen[0].arrayBuffer())).toEqual(payload);
+  });
+
   it('sends Authorization, User-Agent, and an Idempotency-Key on a POST operation', async () => {
     const seen: Request[] = [];
     const fakeFetch = vi.fn<typeof fetch>(async (input) => {

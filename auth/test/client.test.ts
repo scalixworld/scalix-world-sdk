@@ -87,7 +87,7 @@ describe('ScalixAuthClient request wiring', () => {
     expect(calls[0].url).toBe('https://api.scalix.world/v1/auth/oauth/authorize');
     expect(JSON.parse(calls[0].init.body as string)).toEqual({
       provider: 'google',
-      redirect_to: 'https://myapp/cb',
+      redirect_url: 'https://myapp/cb',
     });
     expect(url).toBe('https://provider/oauth?x=1');
   });

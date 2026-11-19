@@ -62,16 +62,9 @@ except RateLimitError as err:
 `asyncio` / `asyncio_detailed` calls are hardened too. Pass `raise_on_error=False`
 to keep the raw generated behavior (documented error bodies returned, not raised).
 
-## Regenerating
+## Source & Contributions
 
-After the API (OpenAPI spec) changes:
-
-```bash
-bash scripts/generate.sh
-```
-
-CI's `SDK/CLI codegen drift-guard` enforces that the committed client matches
-`sdk/openapi.json`.
+Generated from the live [OpenAPI 3.1 spec](https://api.scalix.world/openapi.json). Bug reports, typing fixes, and pull requests are welcome via [`scalixworld/scalix-world-sdk`](https://github.com/scalixworld/scalix-world-sdk).
 
 ## License
 

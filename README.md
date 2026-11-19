@@ -18,6 +18,7 @@ const me = await getMe();
 ```
 
 ```python
+import os
 from scalix_sdk import create_client
 from scalix_sdk.generated.api.account import get_me
 
@@ -31,11 +32,14 @@ Get an API key free at [console.scalix.world](https://console.scalix.world). Ful
 
 ## About this repository
 
-This is the public source mirror for the Scalix SDKs. The SDK clients are generated from the platform's OpenAPI specification and developed in the Scalix platform monorepo; this mirror is refreshed with each release, and **releases ship to npm and PyPI** (currently `1.3.5`).
+**Scalix Cloud** is a proprietary, closed-source managed cloud platform owned by **Scalix World Pvt Ltd** (India) and licensed internationally via **Energy FW Ltd** (UK).
+
+This repository is the public MIT source mirror for the official Scalix Cloud client SDKs, generated from the platform's OpenAPI specification and published regularly to **npm** (`@scalix-world/sdk`, `@scalix-world/auth`) and **PyPI** (`scalix-sdk`).
 
 - **Issues and PRs are welcome here** — bug reports, typing fixes, and doc improvements are triaged and folded into the next release.
 - The MCP server for AI agents is documented at [docs.scalix.world/mcp](https://docs.scalix.world/mcp) (`https://api.scalix.world/v1/mcp`).
+- **Policies:** [Terms](https://scalix.world/terms) · [Privacy](https://scalix.world/privacy) · [Security](https://scalix.world/security)
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT — © 2026 Scalix World Pvt Ltd. See [LICENSE](./LICENSE).
